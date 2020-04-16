@@ -1,0 +1,1 @@
+sales,profits,loss,fiscal,debt,investment,procurement,returns,shareholder,taxes|poverty,gender,sanitation,food,communities,health,safety,training,education,stakeholder|air,water,energy,materials,waste,habitat,wildlife,sustainable,emissions,plastic
