@@ -1,8 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
+from nltk.stem import WordNetLemmatizer
 import operator
 import numpy as np
 
+lemmatizer = WordNetLemmatizer()
 
 f_HUL=open("HUL 2018-2019_Annual Report.txt", "r")
 f_stop_words=open("StopWords_GenericLong.txt", "r")
@@ -33,10 +35,9 @@ def tokenify(sentences):
         buff=''
     return words
 
-print (tokenify(items_HUL))
+#print (tokenify(items_HUL))
 
-
-def count_list(words):
+def glossary_standards(words):
     words.sort()
     #print (words)
     glossary = []
@@ -50,7 +51,7 @@ def count_list(words):
             words.pop(1)
         if words[0] not in stop_words and len(words[0])>2 and words[0].isalpha():
             word_frequency.append(words[0])
-            #print(words[0])
+            print(words[0],lemmatizer.lemmatize(words[0]))
             word_frequency.append(count)
             word_frequency.append(token_id)
             token_id=token_id+1
@@ -61,8 +62,8 @@ def count_list(words):
         count=1
     return glossary
 
-#count_list(tokenify(items_HUL))
-print(count_list(tokenify(items_HUL)))
+glossary_standards(tokenify(items_HUL))
+#print(glossary_standards(tokenify(items_HUL)))
 
 # def remove_stopwords(word,stopwords):
 #     for i in words:
