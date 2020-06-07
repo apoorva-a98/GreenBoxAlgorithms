@@ -17,7 +17,6 @@ items_HUL=f_HUL.read()
 
 avoid=[' ','.','?','!','@','#','$','%','^','&','*','(',')','-','_','=','+','[',']','|',"\n","\t",';',':','<','>','/',',' ]
 
-
 def tokenify(sentences):
     sentences=sentences.lower()
     buff = ''
@@ -51,7 +50,7 @@ def glossary_standards(words):
             words.pop(1)
         if words[0] not in stop_words and len(words[0])>2 and words[0].isalpha():
             word_frequency.append(words[0])
-            print(words[0],lemmatizer.lemmatize(words[0]))
+            #print(words[0],lemmatizer.lemmatize(words[0]))
             word_frequency.append(count)
             word_frequency.append(token_id)
             token_id=token_id+1
@@ -62,7 +61,7 @@ def glossary_standards(words):
         count=1
     return glossary
 
-glossary_standards(tokenify(items_HUL))
+#glossary_standards(tokenify(items_HUL))
 #print(glossary_standards(tokenify(items_HUL)))
 
 # def remove_stopwords(word,stopwords):
@@ -80,12 +79,14 @@ glossary_standards(tokenify(items_HUL))
 #
 # print(HUL_words)
 
-# from nltk.corpus import wordnet as wn
-# words = ['amazing', 'interesting', 'love', 'great', 'nice']
-#
-# for w in words:
-#     tmp = wn.synsets(w)[0].pos()
-#     print w, ":", tmp
+from nltk.corpus import wordnet as wn
+words = ['amazing', 'interesting', 'love', 'great', 'nice', 'better', 'more', 'bad', 'badly', 'beauty', 'beautiful', 'beautifully']
+
+#for w in words:
+    #tmp = wn.synsets(w)[0].pos()
+    #print (w, ":", tmp)
+    #print(lemmatizer.lemmatize(w))
+print(lemmatizer.lemmatize(words[7], pos="r"))
 
 # negate = ["aint", "arent", "cannot", "cant", "couldnt", "darent", "didnt", "doesnt", "ain't", "aren't", "can't",
 #           "couldn't", "daren't", "didn't", "doesn't", "dont", "hadnt", "hasnt", "havent", "isnt", "mightnt", "mustnt",
