@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 
-from nltk.stem import WordNetLemmatizer
+import spacy
+#from nltk.stem import WordNetLemmatizer
 import operator
 import numpy as np
 
-lemmatizer = WordNetLemmatizer()
+# Initialize spacy 'en' model, keeping only tagger component needed for lemmatization
+nlp = spacy.load("en_core_web_sm")
+#lemmatizer = WordNetLemmatizer()
+
 
 f_HUL=open("HUL 2018-2019_Annual Report.txt", "r")
 f_stop_words=open("StopWords_GenericLong.txt", "r")
@@ -49,11 +53,14 @@ def glossary_standards(words):
             count=count+1
             words.pop(1)
         if words[0] not in stop_words and len(words[0])>2 and words[0].isalpha():
-            word_frequency.append(words[0])
+            doc = nlp(words[0])
+            for token in doc:
+                print(token.text, token.lemma_, token.pos_, token.tag_, token.dep_)
+            #word_frequency.append(words[0])
             #print(words[0],lemmatizer.lemmatize(words[0]))
-            word_frequency.append(count)
-            word_frequency.append(token_id)
-            token_id=token_id+1
+            #word_frequency.append(count)
+            #word_frequency.append(token_id)
+            #token_id=token_id+1
             glossary.append(word_frequency)
         # else:
         #     print(words[0])
@@ -61,8 +68,11 @@ def glossary_standards(words):
         count=1
     return glossary
 
-#glossary_standards(tokenify(items_HUL))
+glossary_standards(tokenify(items_HUL))
 #print(glossary_standards(tokenify(items_HUL)))
+
+
+    #STOPWORDS FUNCTION*****
 
 # def remove_stopwords(word,stopwords):
 #     for i in words:
@@ -73,20 +83,19 @@ def glossary_standards(words):
 #     return words
 
 
-# HUL_words = []
-# for i in items_HUL:
-#     HUL_words.append(i.split(" "))
-#
-# print(HUL_words)
+    # NOUN, VERB, ADJECTIVE, ADVERB*****
 
-from nltk.corpus import wordnet as wn
-words = ['amazing', 'interesting', 'love', 'great', 'nice', 'better', 'more', 'bad', 'badly', 'beauty', 'beautiful', 'beautifully']
+# from nltk.corpus import wordnet as wn
+# words = ['amazing', 'interesting', 'love', 'great', 'nice', 'better', 'more', 'bad', 'badly', 'beauty', 'beautiful', 'beautifully']
 
-#for w in words:
-    #tmp = wn.synsets(w)[0].pos()
-    #print (w, ":", tmp)
-    #print(lemmatizer.lemmatize(w))
-print(lemmatizer.lemmatize(words[7], pos="r"))
+
+    #NEGATION*****
+
+# #for w in words:
+#     #tmp = wn.synsets(w)[0].pos()
+#     #print (w, ":", tmp)
+#     #print(lemmatizer.lemmatize(w))
+# print(lemmatizer.lemmatize(words[7], pos="r"))
 
 # negate = ["aint", "arent", "cannot", "cant", "couldnt", "darent", "didnt", "doesnt", "ain't", "aren't", "can't",
 #           "couldn't", "daren't", "didn't", "doesn't", "dont", "hadnt", "hasnt", "havent", "isnt", "mightnt", "mustnt",
