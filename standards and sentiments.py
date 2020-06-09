@@ -43,10 +43,11 @@ def tokenify(sentences):
 
 #GLOSSARY SRANDARDS
 def glossary_standards(words):
-    glossary_nouns = []
-    glossary_verbs = []
-    glossary_adverbs = []
-    glossary_adjectives = []
+    glossary=[]
+    #glossary_nouns = []
+    #glossary_verbs = []
+    #glossary_adverbs = []
+    #glossary_adjectives = []
     token_id =1
 
     while(len(words)>0):
@@ -58,10 +59,10 @@ def glossary_standards(words):
             count=count+1
             words.pop(1)
         if words[0] not in stop_words and len(words[0])>2 and words[0].isalpha():
-            doc = nlp(words[0])
-            for token in doc:
-                print(token.text, token.lemma_, token.pos_, token.tag_, token.dep_)
-            #word_frequency.append(words[0])
+            #doc = nlp(words[0])
+            #for token in doc:
+                #print(token.text, token.lemma_, token.pos_, token.tag_, token.dep_)
+            word_frequency.append(words[0])
             #print(words[0],lemmatizer.lemmatize(words[0]))
             #word_frequency.append(count)
             #word_frequency.append(token_id)
@@ -74,7 +75,7 @@ def glossary_standards(words):
     return glossary
 
 #glossary_standards(tokenify(items_HUL))
-#print(glossary_standards(tokenify(items_HUL)))
+print(glossary_standards(tokenify(items_HUL)))
 
 
 #SENTIMENT SCORE
