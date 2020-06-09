@@ -1,9 +1,20 @@
 #!/usr/bin/env python3
 
+import xlwt
+from xlwt import Workbook
 import spacy
 import operator
 import numpy as np
 import math
+import pandas as pd
+
+# CREATING A EXCEL WORKBOOK
+wb = Workbook(encoding='ascii')
+sheet1 = wb.add_sheet('nouns')
+sheet2 = wb.add_sheet('verbs')
+sheet3 = wb.add_sheet('adverbs')
+sheet4 = wb.add_sheet('adjectives')
+sheet5 = wb.add_sheet('rest')
 
 # INITIALIZING SPACY AND ITS 'en' MODEL
 nlp = spacy.load("en_core_web_sm")
@@ -54,7 +65,7 @@ def divide_glossary(sentences):
 
     for sentence in sentences:
         doc = nlp(sentence)
-        print(math.trunc(sentences.index(sentence)/len(sentences)*100),"%")
+        print(math.trunc(sentences.index(sentence)/len(sentences)*100))
         for token in doc:
             word=[]
             word.append(token.text)
@@ -66,20 +77,45 @@ def divide_glossary(sentences):
                 glossary_nouns.append(word)
             elif token.pos_ == 'VERB':
                 glossary_verbs.append(word)
-            elif token.pos_ == 'ADJ':
+            elif token.pos_ == 'ADV' or token.pos_ == 'ADP':
                 glossary_adverbs.append(word)
-            elif token.pos_ == 'ADV':
+            elif token.pos_ == 'ADJ':
                 glossary_adjectives.append(word)
             else:
                 glossary_POS.append(word)
-        POS.extend((glossary_nouns,glossary_verbs,glossary_adverbs,glossary_adjectives))
+        POS.append(glossary_nouns)
+        POS.append(glossary_verbs)
+        POS.append(glossary_adverbs)
+        POS.append(glossary_adjectives)
     return POS
 #print(divide_glossary(tokenify_glossary(items_HUL)))
 
 
 #SENTIMENT SCORE
 def clean_glossary(POS):
-    sorted(POS,key=lambda x: (x[1],x[0]))
+    sorted_POS=[]
+
+    unsorted_nouns = np.array(POS[0])
+    sorted_nouns=unsorted_nouns[unsorted_nouns[:, 1].argsort()]
+
+    df_nouns = pd.DataFrame(sorted_nouns)
+    filepath = 'Glossary.xlsx'
+    df_nouns.to_excel(filepath, index=False)
+    #sheet2.write(count, i, sentiment_count/len(sentence))
+
+    unsorted_verbs = np.array(POS[1])
+    sorted_verbs=unsorted_verbs[unsorted_verbs[:, 1].argsort()]
+
+    unsorted_adverbs = np.array(POS[2])
+    sorted_adverbs=unsorted_adverbs[unsorted_adverbs[:, 1].argsort()]
+
+    unsorted_adjectives = np.array(POS[3])
+    sorted_adjectives=unsorted_adjectives[unsorted_adjectives[:, 1].argsort()]
+
+    sorted_POS.append(sorted_nouns)
+    sorted_POS.append(sorted_verbs)
+    sorted_POS.append(sorted_adverbs)
+    sorted_POS.append(sorted_adjectives)
 #     words.sort()
 #     #print (words)
 #     glossary = []
@@ -105,9 +141,11 @@ def clean_glossary(POS):
 #         #     print(words[0])
 #         words.pop(0)
 #         count=1
-    return POS
+    return sorted_POS
 #
-print(clean_glossary(divide_glossary(tokenify_glossary(items_HUL))))
+clean_glossary(divide_glossary(tokenify_glossary(items_HUL)))
+
+#wb.save('Glossary.xls')
 
 
     #STOPWORDS FUNCTION*****
