@@ -9,12 +9,13 @@ import math
 import pandas as pd
 
 # CREATING A EXCEL WORKBOOK
-wb = Workbook(encoding='ascii')
-sheet1 = wb.add_sheet('nouns')
-sheet2 = wb.add_sheet('verbs')
-sheet3 = wb.add_sheet('adverbs')
-sheet4 = wb.add_sheet('adjectives')
-sheet5 = wb.add_sheet('rest')
+#filepath = pd.ExcelWriter('Glossary.csv', engine='writer')
+# wb = Workbook(encoding='ascii')
+# sheet1 = wb.add_sheet('nouns')
+# sheet2 = wb.add_sheet('verbs')
+# sheet3 = wb.add_sheet('adverbs')
+# sheet4 = wb.add_sheet('adjectives')
+# sheet5 = wb.add_sheet('rest')
 
 # INITIALIZING SPACY AND ITS 'en' MODEL
 nlp = spacy.load("en_core_web_sm")
@@ -33,24 +34,24 @@ avoid=['@','#','$','%','^','&','*','(',')','_','=','+','[',']','|','\n','\t','<'
 
 
 #TOKANIZATION
-def tokenify_glossary(sentence):
+def tokenify_glossary(report):
     #S=[]
     #for sentence in sentences:
     buff = ''
-    L=[]
-    for letter in sentence:
+    sentences=[]
+    for letter in report:
         letter=letter.lower()
         if letter in avoid:
             if buff != '':
-                L.append(buff)
+                sentences.append(buff)
             buff = ''
         elif (buff is not None):
             buff += letter
     if buff is not None:
-        L.append(buff)
+        sentences.append(buff)
         buff=''
-        #S.append(L)
-    return L
+        #S.append(sentences)
+    return sentences
 #print(tokenify_glossary(items_HUL))
 
 
@@ -90,60 +91,68 @@ def divide_glossary(sentences):
     return POS
 #print(divide_glossary(tokenify_glossary(items_HUL)))
 
+#REDUCE DUPLICATE WORDS AND FREQUENCY
+def reduce_glossary(sorted_words):
+    print("I")
+    glossary=[]
+    token_id=1
+    print(sorted_words)
+    while(len(sorted_words)>0):
+        count=1
+        word_frequency=[]
+        while(len(sorted_words)>1 and sorted_words[0][1]==sorted_words[1][1]):
+            count=count+1
+            np.delete(sorted_words, 1, 0)
+            #sorted_words.pop(1)
+        if sorted_words[0][0] not in stop_words and len(sorted_words[0][0])>2 and sorted_words[0][0].isalpha():
+            print("...")
+            word_frequency.append(count)
+            word_frequency.extend(sorted_words[0])
+            word_frequency.append(token_id)
+            token_id=token_id+1
+            glossary.append(word_frequency)
+        np.delete(sorted_words, 0, 0)
+        #sorted_words.pop(0)
+        count=1
+    return glossary
+
 
 #SENTIMENT SCORE
-def clean_glossary(POS):
+def sort_glossary(POS):
     sorted_POS=[]
 
     unsorted_nouns = np.array(POS[0])
     sorted_nouns=unsorted_nouns[unsorted_nouns[:, 1].argsort()]
-
+    reduce_glossary(sorted_nouns)
     df_nouns = pd.DataFrame(sorted_nouns)
-    filepath = 'Glossary.xlsx'
-    df_nouns.to_excel(filepath, index=False)
-    #sheet2.write(count, i, sentiment_count/len(sentence))
 
     unsorted_verbs = np.array(POS[1])
     sorted_verbs=unsorted_verbs[unsorted_verbs[:, 1].argsort()]
+    df_verbs = pd.DataFrame(sorted_verbs)
 
     unsorted_adverbs = np.array(POS[2])
     sorted_adverbs=unsorted_adverbs[unsorted_adverbs[:, 1].argsort()]
+    df_adverbs = pd.DataFrame(sorted_adverbs)
 
     unsorted_adjectives = np.array(POS[3])
     sorted_adjectives=unsorted_adjectives[unsorted_adjectives[:, 1].argsort()]
+    df_adjective = pd.DataFrame(sorted_adjectives)
 
     sorted_POS.append(sorted_nouns)
     sorted_POS.append(sorted_verbs)
     sorted_POS.append(sorted_adverbs)
     sorted_POS.append(sorted_adjectives)
-#     words.sort()
-#     #print (words)
-#     glossary = []
-#     token_id =1
-#
-#     while(len(words)>0):
-#         count=1
-#         word_frequency=[]
-#         while(len(words)>1 and words[0]==words[1]):
-#             count=count+1
-#             words.pop(1)
-#         if words[0] not in stop_words and len(words[0])>2 and words[0].isalpha():
-#             doc = nlp(words[0])
-#             for token in doc:
-#                 print(token.text, token.lemma_, token.pos_, token.tag_, token.dep_)
-#             #word_frequency.append(words[0])
-#             #print(words[0],lemmatizer.lemmatize(words[0]))
-#             #word_frequency.append(count)
-#             #word_frequency.append(token_id)
-#             #token_id=token_id+1
-#             glossary.append(word_frequency)
-#         # else:
-#         #     print(words[0])
-#         words.pop(0)
-#         count=1
+
+    with pd.ExcelWriter('Glossary.xlsx') as writer:
+        df_nouns.to_excel(writer, sheet_name='Nouns')
+        df_verbs.to_excel(writer, sheet_name='Verbs')
+        df_adverbs.to_excel(writer, sheet_name='Adverbs')
+        df_adjective.to_excel(writer, sheet_name='Adjectives')
+    writer.save()
+
     return sorted_POS
-#
-clean_glossary(divide_glossary(tokenify_glossary(items_HUL)))
+print(sort_glossary(divide_glossary(tokenify_glossary(items_HUL))))
+
 
 #wb.save('Glossary.xls')
 
