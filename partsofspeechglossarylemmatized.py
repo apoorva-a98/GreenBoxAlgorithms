@@ -3,15 +3,16 @@
 import spacy
 import operator
 import numpy as np
+import math
 
 # INITIALIZING SPACY AND ITS 'en' MODEL
 nlp = spacy.load("en_core_web_sm")
 
 #READING COMPANY REPORTS
 f_HUL=open("HUL 2018-2019_Annual Report.txt", "r")
-#items_HUL=f_HUL.read()
-read_HUL = f_HUL.read().split(".")
-items_HUL=[str(i.lower()) for i in read_HUL]
+items_HUL=f_HUL.read()
+#read_HUL = f_HUL.read().split(".")
+#items_HUL=[str(i.lower()) for i in read_HUL]
 
 #CLEANING DATA
 f_stop_words=open("StopWords_GenericLong.txt", "r")
@@ -21,63 +22,64 @@ avoid=['@','#','$','%','^','&','*','(',')','_','=','+','[',']','|','\n','\t','<'
 
 
 #TOKANIZATION
-def tokenify(sentences):
-    S=[]
-    for sentence in sentences:
-        buff = ''
-        L=[]
-        for letter in sentence:
-            if letter in avoid:
-                if buff != '':
-                    L.append(buff)
-                buff = ''
-            elif (buff is not None):
-                buff += letter
-        if buff is not None:
-            L.append(buff)
-            buff=''
-        S.append(L)
-    return S
-#tokenify(items_HUL)
+def tokenify_glossary(sentence):
+    #S=[]
+    #for sentence in sentences:
+    buff = ''
+    L=[]
+    for letter in sentence:
+        letter=letter.lower()
+        if letter in avoid:
+            if buff != '':
+                L.append(buff)
+            buff = ''
+        elif (buff is not None):
+            buff += letter
+    if buff is not None:
+        L.append(buff)
+        buff=''
+        #S.append(L)
+    return L
+#print(tokenify_glossary(items_HUL))
 
 
 #GLOSSARY SRANDARDS
-
-def glossary_standards(sentences):
+def divide_glossary(sentences):
     glossary_nouns = []
     glossary_verbs = []
     glossary_adverbs = []
     glossary_adjectives = []
     glossary_POS=[]
-    token_id =1
+    POS=[]
 
     for sentence in sentences:
-        print(sentence)
-        doc = nlp(str(sentence))
+        doc = nlp(sentence)
+        print(math.trunc(sentences.index(sentence)/len(sentences)*100),"%")
         for token in doc:
-            print(token.text, token.lemma_, token.pos_, token.tag_, token.dep_)
             word=[]
             word.append(token.text)
             word.append(token.lemma_)
             word.append(token.pos_)
             word.append(token.tag_)
             word.append(token.dep_)
-            if token.pos == 'NOUN':
+            if token.pos_ == 'NOUN':
                 glossary_nouns.append(word)
-            elif token.pos == 'VERB':
-                glossary_nouns.append(word)
-            elif token.pos == 'ADJ':
-                glossary_nouns.append(word)
-            elif token.pos == 'ADV':
-                glossary_nouns.append(word)
+            elif token.pos_ == 'VERB':
+                glossary_verbs.append(word)
+            elif token.pos_ == 'ADJ':
+                glossary_adverbs.append(word)
+            elif token.pos_ == 'ADV':
+                glossary_adjectives.append(word)
             else:
                 glossary_POS.append(word)
-    return glossary_nouns, glossary_verbs, glossary_adverbs, glossary_adjectives, glossary_POS
-glossary_standards(tokenify(items_HUL))
+        POS.extend((glossary_nouns,glossary_verbs,glossary_adverbs,glossary_adjectives))
+    return POS
+#print(divide_glossary(tokenify_glossary(items_HUL)))
 
 
 #SENTIMENT SCORE
-# def glossary_standards(words):
+def clean_glossary(POS):
+    sorted(POS,key=lambda x: (x[1],x[0]))
 #     words.sort()
 #     #print (words)
 #     glossary = []
@@ -103,9 +105,9 @@ glossary_standards(tokenify(items_HUL))
 #         #     print(words[0])
 #         words.pop(0)
 #         count=1
-#     return glossary
+    return POS
 #
-# glossary_standards(tokenify(items_HUL))
+print(clean_glossary(divide_glossary(tokenify_glossary(items_HUL))))
 
 
     #STOPWORDS FUNCTION*****
