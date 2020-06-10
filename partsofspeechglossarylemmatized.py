@@ -142,7 +142,7 @@ def sort_glossary(POS):
     sorted_POS.append(sorted_adverbs)
     sorted_POS.append(sorted_adjectives)
 
-    with pd.ExcelWriter('Glossary.xlsx') as writer:
+    with pd.ExcelWriter('Glossary.xls') as writer:
         df_nouns.to_excel(writer, sheet_name='Nouns')
         df_verbs.to_excel(writer, sheet_name='Verbs')
         df_adverbs.to_excel(writer, sheet_name='Adverbs')
