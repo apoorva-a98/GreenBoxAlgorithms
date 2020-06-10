@@ -7,6 +7,7 @@ import operator
 import numpy as np
 import math
 import pandas as pd
+import json
 
 # CREATING A EXCEL WORKBOOK
 #filepath = pd.ExcelWriter('Glossary.csv', engine='writer')
@@ -19,6 +20,10 @@ import pandas as pd
 
 # INITIALIZING SPACY AND ITS 'en' MODEL
 nlp = spacy.load("en_core_web_sm")
+
+# OPENING JSON SENTIMENT DICTIONARY
+with open('afinn-165.json') as f:
+  data = json.load(f)
 
 #READING COMPANY REPORTS
 f_HUL=open("HUL 2018-2019_Annual Report.txt", "r")
@@ -74,6 +79,13 @@ def divide_glossary(sentences):
             word.append(token.pos_)
             word.append(token.tag_)
             word.append(token.dep_)
+
+            #afinn sentiments
+            if token.text in data:              #apoorva create a function for this later
+                word.append(data[token.text])
+            else:
+                word.append('')
+
             if token.pos_ == 'NOUN':
                 glossary_nouns.append(word)
             elif token.pos_ == 'VERB':
