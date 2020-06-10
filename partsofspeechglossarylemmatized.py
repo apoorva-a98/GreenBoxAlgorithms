@@ -93,26 +93,22 @@ def divide_glossary(sentences):
 
 #REDUCE DUPLICATE WORDS AND FREQUENCY
 def reduce_glossary(sorted_words):
-    print("I")
     glossary=[]
     token_id=1
-    print(sorted_words)
     while(len(sorted_words)>0):
         count=1
         word_frequency=[]
         while(len(sorted_words)>1 and sorted_words[0][1]==sorted_words[1][1]):
             count=count+1
-            np.delete(sorted_words, 1, 0)
-            #sorted_words.pop(1)
+            sorted_words=np.delete(sorted_words, 1, 0)
         if sorted_words[0][0] not in stop_words and len(sorted_words[0][0])>2 and sorted_words[0][0].isalpha():
-            print("...")
             word_frequency.append(count)
             word_frequency.extend(sorted_words[0])
             word_frequency.append(token_id)
             token_id=token_id+1
             glossary.append(word_frequency)
-        np.delete(sorted_words, 0, 0)
-        #sorted_words.pop(0)
+        sorted_words=np.delete(sorted_words, 0, 0)
+        # #sorted_words.pop(0)
         count=1
     return glossary
 
@@ -123,19 +119,22 @@ def sort_glossary(POS):
 
     unsorted_nouns = np.array(POS[0])
     sorted_nouns=unsorted_nouns[unsorted_nouns[:, 1].argsort()]
-    reduce_glossary(sorted_nouns)
+    sorted_nouns=reduce_glossary(sorted_nouns)
     df_nouns = pd.DataFrame(sorted_nouns)
 
     unsorted_verbs = np.array(POS[1])
     sorted_verbs=unsorted_verbs[unsorted_verbs[:, 1].argsort()]
+    sorted_verbs=reduce_glossary(sorted_verbs)
     df_verbs = pd.DataFrame(sorted_verbs)
 
     unsorted_adverbs = np.array(POS[2])
     sorted_adverbs=unsorted_adverbs[unsorted_adverbs[:, 1].argsort()]
+    sorted_adverbs=reduce_glossary(sorted_adverbs)
     df_adverbs = pd.DataFrame(sorted_adverbs)
 
     unsorted_adjectives = np.array(POS[3])
     sorted_adjectives=unsorted_adjectives[unsorted_adjectives[:, 1].argsort()]
+    sorted_adjectives=reduce_glossary(sorted_adjectives)
     df_adjective = pd.DataFrame(sorted_adjectives)
 
     sorted_POS.append(sorted_nouns)
