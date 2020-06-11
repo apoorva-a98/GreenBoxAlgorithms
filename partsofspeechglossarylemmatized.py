@@ -7,6 +7,7 @@ import operator
 import numpy as np
 import math
 import pandas as pd
+from pandas import DataFrame
 import json
 
 # CREATING A EXCEL WORKBOOK
@@ -24,6 +25,15 @@ nlp = spacy.load("en_core_web_sm")
 # OPENING JSON SENTIMENT DICTIONARY
 with open('afinn-165.json') as f:
   data = json.load(f)
+
+# OPENING LOUGHRAN MCDONALD SENTIMENT WORD LIST
+file_path = 'LoughranMcDonald_SentimentWordLists_2018.xlsx'
+items_mcdonals=[0]*8
+for i in range(1,8):
+    items_mcdonals[i-1]=pd.read_excel(file_path, sheet_name=i)
+    items_mcdonals[i-1]=items_mcdonals[i-1].values.tolist()
+    items_mcdonals[i-1] = [item for sublist in items_mcdonals[i-1] for item in sublist]
+#print(items_mcdonals[2])
 
 #READING COMPANY REPORTS
 f_HUL=open("HUL 2018-2019_Annual Report.txt", "r")
@@ -83,6 +93,16 @@ def divide_glossary(sentences):
             #afinn sentiments
             if token.text in data:              #apoorva create a function for this later
                 word.append(data[token.text])
+            else:
+                word.append('')
+
+            #mcdonald sentiments
+            mc_rating=0
+            for i in range(7):                  #apoorva create a function for this later
+                if token.text in items_mcdonals[i] or token.lemma_ in items_mcdonals[i]:
+                    mc_rating=i
+            if mc_rating != 0:
+                word.append(mc_rating)
             else:
                 word.append('')
 
@@ -162,6 +182,7 @@ def sort_glossary(POS):
     writer.save()
 
     return sorted_POS
+sort_glossary(divide_glossary(tokenify_glossary(items_HUL)))
 print(sort_glossary(divide_glossary(tokenify_glossary(items_HUL))))
 
 
