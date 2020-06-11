@@ -41,32 +41,28 @@ def tokenify(sentences):
     return words
 #print (tokenify(items_HUL))
 
-#GLOSSARY SRANDARDS
+SENTIMENT SCORE
 def glossary_standards(words):
-    glossary=[]
-    #glossary_nouns = []
-    #glossary_verbs = []
-    #glossary_adverbs = []
-    #glossary_adjectives = []
+    words.sort()
+    #print (words)
+    glossary = []
     token_id =1
 
     while(len(words)>0):
         count=1
         word_frequency=[]
-
-
         while(len(words)>1 and words[0]==words[1]):
             count=count+1
             words.pop(1)
         if words[0] not in stop_words and len(words[0])>2 and words[0].isalpha():
-            #doc = nlp(words[0])
-            #for token in doc:
-                #print(token.text, token.lemma_, token.pos_, token.tag_, token.dep_)
+            doc = nlp(words[0])
+            for token in doc:
+                print(token.text, token.lemma_, token.pos_, token.tag_, token.dep_)
             word_frequency.append(words[0])
-            #print(words[0],lemmatizer.lemmatize(words[0]))
-            #word_frequency.append(count)
-            #word_frequency.append(token_id)
-            #token_id=token_id+1
+            print(words[0],lemmatizer.lemmatize(words[0]))
+            word_frequency.append(count)
+            word_frequency.append(token_id)
+            token_id=token_id+1
             glossary.append(word_frequency)
         # else:
         #     print(words[0])
@@ -74,40 +70,7 @@ def glossary_standards(words):
         count=1
     return glossary
 
-#glossary_standards(tokenify(items_HUL))
-print(glossary_standards(tokenify(items_HUL)))
-
-
-#SENTIMENT SCORE
-# def glossary_standards(words):
-#     words.sort()
-#     #print (words)
-#     glossary = []
-#     token_id =1
-#
-#     while(len(words)>0):
-#         count=1
-#         word_frequency=[]
-#         while(len(words)>1 and words[0]==words[1]):
-#             count=count+1
-#             words.pop(1)
-#         if words[0] not in stop_words and len(words[0])>2 and words[0].isalpha():
-#             doc = nlp(words[0])
-#             for token in doc:
-#                 print(token.text, token.lemma_, token.pos_, token.tag_, token.dep_)
-#             #word_frequency.append(words[0])
-#             #print(words[0],lemmatizer.lemmatize(words[0]))
-#             #word_frequency.append(count)
-#             #word_frequency.append(token_id)
-#             #token_id=token_id+1
-#             glossary.append(word_frequency)
-#         # else:
-#         #     print(words[0])
-#         words.pop(0)
-#         count=1
-#     return glossary
-#
-# glossary_standards(tokenify(items_HUL))
+glossary_standards(tokenify(items_HUL))
 
 
     #STOPWORDS FUNCTION*****

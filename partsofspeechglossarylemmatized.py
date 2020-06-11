@@ -32,7 +32,7 @@ items_mcdonals=[0]*8
 for i in range(1,8):
     items_mcdonals[i-1]=pd.read_excel(file_path, sheet_name=i)
     items_mcdonals[i-1]=items_mcdonals[i-1].values.tolist()
-    items_mcdonals[i-1] = [item for sublist in items_mcdonals[i-1] for item in sublist]
+    items_mcdonals[i-1] = [item.lower() for sublist in items_mcdonals[i-1] for item in sublist]
 #print(items_mcdonals[2])
 
 #READING COMPANY REPORTS
