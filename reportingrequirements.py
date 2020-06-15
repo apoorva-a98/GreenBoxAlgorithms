@@ -116,7 +116,7 @@ def reduce_glossary(sorted_words):
     while(len(sorted_words)>0):
         count=1
         word_frequency=[]
-        while(len(sorted_words)>1 and sorted_words[0][0]==sorted_words[1][0]):
+        while(len(sorted_words)>1 and sorted_words[0][1]==sorted_words[1][1]):
             count=count+1
             sorted_words=np.delete(sorted_words, 1, 0)
         if sorted_words[0][0] not in stop_words and len(sorted_words[0][0])>2 and sorted_words[0][0].isalpha():
@@ -160,7 +160,7 @@ def sort_glossary(POS):
     sorted_POS.append(sorted_adjectives)
 
     #glossary words to excel
-    with pd.ExcelWriter('Standards.xls') as writer:
+    with pd.ExcelWriter('Reporting Requirements Glossary.xls') as writer:
         df_nouns.to_excel(writer, sheet_name='Nouns')
         df_verbs.to_excel(writer, sheet_name='Verbs')
         df_adverbs.to_excel(writer, sheet_name='Adverbs')
