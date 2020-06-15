@@ -151,8 +151,8 @@ ENVIRONMENT-
 a. Total weight or volume of materials that are used to produce and package the organization’s primary products and services during the reporting period, by:
 i. non-renewable materials used;
 ii. renewable materials used
-a. Percentage of recycled input materials used to manufacture the organization’s primary products and services.
-a. Percentage of reclaimed products and their packaging materials for each product category.
+a. Percentage of recycled input materials [a]used to manufacture the organization’s primary products and services.
+a. Percentage of reclaimed products [b]and their packaging materials for each product category.
 b. How the data for this disclosure have been collected
 
 
@@ -437,3 +437,275 @@ b. Number of suppliers identified as having significant actual and potential neg
 c. Significant actual and potential negative environmental impacts identified in the supply chain.
  d. Percentage of suppliers identified as having significant actual and potential negative environmental impacts with which improvements were agreed upon as a result of assessment.
 e. Percentage of suppliers identified as having significant actual and potential negative environmental impacts with which relationships were terminated as a result of assessment, and why.
+
+
+
+
+SOCIAL
+
+a. Percentage of individuals within the organization’s governance bodies in each of the following diversity categories:
+i. Gender;
+ii. Age group: under 30 years old, 30-50 years old, over 50 years old;
+iii. Other indicators of diversity where relevant (such as minority or vulnerable groups).
+b. Percentage of employees per employee category in each of the following diversity categories: i. Gender;
+ii. Age group: under 30 years old, 30-50 years old, over 50 years old;
+iii. Other indicators of diversity where relevant (such as minority or vulnerable groups
+a. Ratio of the basic salary and remuneration of women to men for each employee category, by significant locations of operation.
+b. The definition used for ‘significant locations of operation’.
+
+
+a. Total number and rate of new employee hires during the reporting period, by age group, gender and region.
+ 401-1
+b. Total number and rate of employee turnover during the reporting period, by age group, gender and region.
+a. Benefits which are standard for full-time employees of the organization but are not provided to temporary or part-time employees, by significant locations of operation. These include, as a minimum:
+i. life insurance;
+ii. health care;
+iii. disability and invalidity coverage;
+iv. parental leave;
+v. retirement provision;
+vi. stock ownership;
+vii. others.
+b. The definition used for ‘significant locations of operation’.
+a. b. c.
+Total number of employees that were entitled to parental leave, by gender. Total number of employees that took parental leave, by gender.
+Total number of employees that returned to work in the reporting period after parental leave ended, by gender.
+Total number of employees that returned to work after parental leave ended that were still employed 12 months after their return to work, by gender.
+Return to work and retention rates of employees that took parental leave, by gender.
+
+
+402
+Minimum number of weeks’ notice typically provided to employees and their representatives prior to the implementation of significant operational changes that could substantially
+affect them.
+ b. For organizations with collective bargaining agreements, report whether the notice period and provisions for consultation and negotiation are specified in collective agreements
+
+
+403
+The level at which each formal joint management-worker health and safety committee typically operates within the organization.
+b. Percentage of workers whose work, or workplace, is controlled by the organization, that are represented by formal joint management-worker health and safety committees
+
+
+. Types of injury, injury rate (IR), occupational disease rate (ODR), lost day rate (LDR), absentee rate (AR), and work-related fatalities, for all employees, with a breakdown by:
+i. region;
+ii. gender.
+b. Types of injury, injury rate (IR), and work-related fatalities, for all workers (excluding employees) whose work, or workplace, is controlled by the organization, with a breakdown by:
+i. region;
+ii. gender.
+c. The system of rules applied in recording and reporting accident statistics.
+ Whether there are workers whose work, or workplace, is controlled by the organization, involved in occupational activities who have a high incidence or high risk of specific diseases. Whether formal agreements (either local or global) with trade unions cover health and safety.
+b. If so, the extent, as a percentage, to which various health and safety topics are covered by these agreements.
+
+
+a. A statement of whether an occupational health and safety management system has been implemented, including whether:
+i. the system has been implemented because of legal requirements and, if so, a list of the requirements;
+ii. the system has been implemented based on recognized risk management and/or management system standards/guidelines and, if so, a list of the standards/guidelines.
+b. A description of the scope of workers, activities, and workplaces covered by the occupational health and safety management system, and an explanation of whether and, if so, why any workers, activities, or workplaces are not covered.
+
+
+a. A description of the processes used to identify work-related hazards and assess risks on a routine and non-routine basis, and to apply the hierarchy of controls in order to eliminate hazards and minimize risks, including:
+i. how the organization ensures the quality of these processes, including the competency of persons who carry them out;
+ii. how the results of these processes are used to evaluate and continually improve the occupational health and safety management system.
+A description of the processes for workers to report work-related hazards and hazardous situations, and an explanation of how workers are protected against reprisals.
+c. A description of the policies and processes for workers to remove themselves from work situations that they believe could cause injury or ill health, and an explanation of how workers are protected against reprisals.
+d. A description of the processes used to investigate work-related incidents, including the processes to identify hazards and assess risks relating to the incidents, to determine corrective actions using the hierarchy of controls, and to determine improvements needed in the occupational health and safety management system
+
+
+ A description of the occupational health services’ functions that contribute to the identification and elimination of hazards and minimization of risks, and an explanation of how the organization ensures the quality of these services and facilitates workers’ access to them.
+
+
+a. A description of the processes for worker participation and consultation in the development, implementation, and evaluation of the occupational health and safety management system, and for providing access to and communicating relevant information on occupational health and safety to workers.
+ 403-4
+b. Where formal joint management–worker health and safety committees exist, a description of their responsibilities, meeting frequency, decision-making authority, and whether and, if so, why any workers are not represented by these committees.
+
+
+a. An explanation of how the organization facilitates workers’ access to non-occupational medical and healthcare services, and the scope of access provided.
+b. A description of any voluntary health promotion services and programs offered to workers to address major non-work-related health risks, including the specific health risks addressed, and how the organization facilitates workers’ access to these services and programs.
+
+
+a. A description of the organization’s approach to preventing or mitigating significant negative occupational health and safety impacts that are directly linked to its operations, products or services by its business relationships, and the related hazards and risks.
+
+
+a. If the organization has implemented an occupational health and safety management system based on legal requirements and/or recognized standards/guidelines:
+i. the number and percentage of all employees and workers who are not employees but whose work and/or workplace is controlled by the organization, who are covered by such a system;
+ii. the number and percentage of all employees and workers who are not employees but whose work and/or workplace is controlled by the organization, who are covered by such a system that has been internally audited;
+iii. the number and percentage of all employees and workers who are not employees but whose work and/or workplace is controlled by the organization, who are covered by such a system that has been audited or certified by an external party.
+b. Whether and, if so, why any workers have been excluded from this disclosure, including the types of worker excluded.
+c. Any contextual information necessary to understand how the data have been compiled, such as any standards, methodologies, and assumptions used.
+
+
+For all employees:
+i. The number and rate of fatalities as a result of work-related injury;
+ii. The number and rate of high-consequence work-related injuries (excluding fatalities);
+iii. The number and rate of recordable work-related injuries;
+iv. The main types of work-related injury;
+v. The number of hours worked.
+For all workers who are not employees but whose work and/or workplace is controlled by the organization:
+i. The number and rate of fatalities as a result of work-related injury;
+ii. The number and rate of high-consequence work-related injuries (excluding fatalities); iii. The number and rate of recordable work-related injuries;
+iv. The main types of work-related injury;
+v. The number of hours worked.
+The work-related hazards that pose a risk of high-consequence injury, including:
+i. how these hazards have been determined;
+ii. which of these hazards have caused or contributed to high-consequence injuries during the reporting period;
+iii. actions taken or underway to eliminate these hazards and minimize risks using the hierarchy of controls.
+Any actions taken or underway to eliminate other work-related hazards and minimize risks using the hierarchy of controls.
+Whether the rates have been calculated based on 200,000 or 1,000,000 hours worked.
+Whether and, if so, why any workers have been excluded from this disclosure, including the types of worker excluded.
+Any contextual information necessary to understand how the data have been compiled, such as any standards, methodologies, and assumptions used
+
+
+. For all employees:
+i. The number of fatalities as a result of work-related ill health;
+ii. The number of cases of recordable work-related ill health;
+iii. The main types of work-related ill health.
+b. For all workers who are not employees but whose work and/or workplace is controlled by the organization:
+i. The number of fatalities as a result of work-related ill health;
+ii. The number of cases of recordable work-related ill health;
+iii. The main types of work-related ill health.
+c. The work-related hazards that pose a risk of ill health, including:
+i. how these hazards have been determined;
+ii. which of these hazards have caused or contributed to cases of ill health during the reporting period;
+iii. actions taken or underway to eliminate these hazards and minimize risks using the hierarchy of controls.
+d. Whether and, if so, why any workers have been excluded from this disclosure, including the types of worker excluded.
+e. Any contextual information necessary to understand how the data have been compiled, such as any standards, methodologies, and assumptions used.
+
+
+404
+a. Average hours of training that the organization’s employees have undertaken during the reporting period, by:
+i. gender;
+ii. employee category
+
+
+a. Type and scope of programs implemented and assistance provided to upgrade employee skills.
+404-2
+b. Transition assistance programs provided to facilitate continued employability and the management of career endings resulting from retirement or termination of employment
+
+
+a. Percentage of total employees by gender and by employee category who received a regular performance and career development review during the reporting period.
+
+
+
+
+407-
+a. Operations and suppliers in which workers’ rights to exercise freedom of association or collective bargaining may be violated or at significant risk either in terms of:
+i. type of operation (such as manufacturing plant) and supplier;
+ii. countries or geographic areas with operations and suppliers considered at risk.
+b. Measures taken by the organization in the reporting period intended to support rights to exercise freedom of association and collective bargaining.
+
+
+408
+a. Operations and suppliers considered to have significant risk for incidents of:
+i. child labor;
+ii. young workers exposed to hazardous work.
+b. Operations and suppliers considered to have significant risk for incidents of child labor either in terms of:
+i. type of operation (such as manufacturing plant) and supplier;
+ii. countries or geographic areas with operations and suppliers considered at risk.
+c. Measures taken by the organization in the reporting period intended to contribute to the effective abolition of child labor.
+
+
+409-
+a. Operations and suppliers considered to have significant risk for incidents of forced or compulsory labor either in terms of:
+i. type of operation (such as manufacturing plant) and supplier;
+ii. countries or geographic areas with operations and suppliers considered at risk.
+b. Measures taken by the organization in the reporting period intended to contribute to the elimination of all forms of forced or compulsory labor.
+
+
+410-
+a. Percentage of security personnel who have received formal training in the organization’s human rights policies or specific procedures and their application to security.
+b. Whether training requirements also apply to third-party organizations providing security personnel.
+
+
+411
+a. Total number of identified incidents of violations involving the rights of indigenous peoples during the reporting period.
+b. Status of the incidents and actions taken with reference to the following:
+i. Incident reviewed by the organization;
+ii. Remediation plans being implemented;
+iii. Remediation plans that have been implemented, with results reviewed through routine internal management review processes;
+iv. Incident no longer subject to action.
+
+
+412-
+a. Total number and percentage of operations that have been subject to human rights reviews or human rights impact assessments, by country.
+. Total number of hours in the reporting period devoted to training on human rights policies or procedures concerning aspects of human rights that are relevant to operations.
+b. Percentage of employees trained during the reporting period in human rights policies or procedures concerning aspects of human rights that are relevant to operations.
+
+
+a. Total number and percentage of significant investment agreements and contracts that include human rights clauses or that underwent human rights screening 
+b. The definition used for ‘significant investment agreements’
+
+
+413-
+Percentage of operations with implemented local community engagement, impact assessments, and/or development programs, including the use of:
+i. social impact assessments, including gender impact assessments, based on participatory processes;
+ii. environmental impact assessments and ongoing monitoring;
+iii. public disclosure of results of environmental and social impact assessments;
+iv. local community development programs based on local communities’ needs;
+v. stakeholder engagement plans based on stakeholder mapping;
+vi. broad based local community consultation committees and processes that include vulnerable groups;
+vii. works councils, occupational health and safety committees and other worker representation bodies to deal with impacts;
+viii. formal local community grievance processes.
+a. Operations with significant actual and potential negative impacts on local communities, including:
+i. the location of the operations;
+ii. the significant actual and potential negative impacts of operations
+
+
+414-
+a. Percentage of new suppliers that were screened using social criteria
+a. Number of suppliers assessed for social impacts.
+b. Number of suppliers identified as having significant actual and potential negative social impacts.
+c. Significant actual and potential negative social impacts identified in the supply chain.
+d. Percentage of suppliers identified as having significant actual and potential negative social impacts with which improvements were agreed upon as a result of assessment.
+e. Percentage of suppliers identified as having significant actual and potential negative social impacts with which relationships were terminated as a result of assessment, and why.
+
+
+415-
+. Total monetary value of financial and in-kind political contributions made directly and indirectly by the organization by country and recipient/beneficiary.
+  b. If applicable, how the monetary value of in-kind contributions was estimated
+
+
+416-
+a. Percentage of significant product and service categories for which health and safety impacts are assessed for improvement.
+
+
+Total number of incidents of non-compliance with regulations and/or voluntary codes concerning the health and safety impacts of products and services within the reporting period, by:
+i. incidents of non-compliance with regulations resulting in a fine or penalty;
+ii. incidents of non-compliance with regulations resulting in a warning;
+iii. incidents of non-compliance with voluntary codes.
+If the organization has not identified any non-compliance with regulations and/or voluntary codes, a brief statement of this fact is sufficient.
+
+
+417-
+a. Whether each of the following types of information is required by the organization’s procedures for product and service information and labeling:
+i. The sourcing of components of the product or service;
+ii. Content, particularly with regard to substances that might produce an environmental or social impact;
+iii. Safe use of the product or service;
+iv. Disposal of the product and environmental or social impacts;
+v. Other (explain).
+b. Percentage of significant product or service categories covered by and assessed for compliance with such procedures.
+
+
+418-
+Total number of incidents of non-compliance with regulations and/or voluntary codes concerning marketing communications, including advertising, promotion, and sponsorship, by:
+i. incidents of non-compliance with regulations resulting in a fine or penalty;
+ii. incidents of non-compliance with regulations resulting in a warning;
+iii. incidents of non-compliance with voluntary codes.
+If the organization has not identified any non-compliance with regulations and/or voluntary codes, a brief statement of this fact is sufficient.
+Total number of substantiated complaints received concerning breaches of customer privacy, categorized by:
+i. complaints received from outside parties and substantiated by the organization;
+ii. complaints from regulatory bodies.
+Total number of identified leaks, thefts, or losses of customer data.
+If the organization has not identified any substantiated complaints, a brief statement of this fact is sufficient.
+
+
+419-
+a. Significant fines and non-monetary sanctions for non-compliance with laws and/or regulations in the social and economic area in terms of:
+i. total monetary value of significant fines;
+ii. total number of non-monetary sanctions;
+iii. cases brought through dispute resolution mechanisms.
+b. If the organization has not identified any non-compliance with laws and/or regulations, a brief statement of this fact is sufficient.
+c. The context against which significant fines and non-monetary sanctions were incurred
+
+
+
+
+[a]% by weight/volume of recycled material INPUT
+[b]% by weight/volume of reclaimed products
