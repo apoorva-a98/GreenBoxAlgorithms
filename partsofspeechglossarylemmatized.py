@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-#from nltk.corpus import wordnet
+from nltk.corpus import wordnet
 #from nltk.stem import WordNetLemmatizer
 import xlwt
 from xlwt import Workbook
@@ -11,7 +11,6 @@ import math
 import pandas as pd
 from pandas import DataFrame
 import json
-from PyDictionary import PyDictionary
 
 # CREATING A EXCEL WORKBOOK
 #filepath = pd.ExcelWriter('Glossary.csv', engine='writer')
@@ -149,22 +148,17 @@ def reduce_glossary(sorted_words):
 
 #GROUPING SYNONYMS
 def group_synoynms(POS):
-    # token_id=1
-    # for i in POS:
-        #for syn in wordnet.synsets(i[1]):
-        for syn in wordnet.synsets("satisfied"):
+    token_id=1
+    for i in POS:
+        for syn in wordnet.synsets(i[1]):
             for l in syn.lemmas():
-                for syn in wordnet.synsets(l.name()):
-                    for k in syn.lemmas():
-                        print(k.name())
-                # for j in POS:
-                #     if l.name() == j[1] and j[8] is not None:
-                        # print(i[1],l.name(),j[1])
+                for j in POS:
+                    if l.name() == j[1] and j[8] is not None:
+                        print(i[1],l.name(),j[1])
                         # j[8] = token_id
-                        # break
+                        break
         # token_id = token_id +1
-    # return POS
-group_synoynms(items_HUL)
+    return POS
 
 #CREATE GLOSSARY
 def sort_glossary(POS):
@@ -204,7 +198,7 @@ def sort_glossary(POS):
 #     writer.save()
 #
     return sorted_POS
-#sort_glossary(divide_glossary(tokenify_glossary(items_HUL)))
+sort_glossary(divide_glossary(tokenify_glossary(items_HUL)))
 #print(sort_glossary(divide_glossary(tokenify_glossary(items_HUL))))
 
 
