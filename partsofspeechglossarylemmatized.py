@@ -128,7 +128,7 @@ def divide_glossary(sentences):
 #REDUCE DUPLICATE WORDS AND FREQUENCY
 def reduce_glossary(sorted_words):
     glossary=[]
-    token_id=""
+    token_id=''
     while(len(sorted_words)>0):
         count=1
         word_frequency=[]
@@ -142,22 +142,32 @@ def reduce_glossary(sorted_words):
             #token_id=token_id+1
             glossary.append(word_frequency)
         sorted_words=np.delete(sorted_words, 0, 0)
-        # #sorted_words.pop(0)
+        #sorted_words.pop(0)
         count=1
     return glossary
 
 #GROUPING SYNONYMS
+def remove_duplication_from_wordnet(keyword):
+    synonym_list=[]
+    synonym_list.append(keyword)
+    for syn in wordnet.synsets(keyword):
+        for synonym in syn.lemmas():
+            if synonym.name() not in synonym_list:
+                synonym_list.append(synonym.name())
+    return synonym_list
+
+
 def group_synoynms(POS):
     token_id=1
     for i in POS:
-        for syn in wordnet.synsets(i[1]):
-            for l in syn.lemmas():
-                for j in POS:
-                    if l.name() == j[1] and j[8] is not None:
-                        print(i[1],l.name(),j[1])
-                        # j[8] = token_id
-                        break
-        # token_id = token_id +1
+        synonym_list= remove_duplication_from_wordnet(i[1])
+        for j in POS:
+            if j[1] in synonym_list and j[8] is not None:
+                print('true')
+            else:
+                print('false')
+                #j[8] = token_id
+        token_id = token_id +1
     return POS
 
 #CREATE GLOSSARY
@@ -168,38 +178,38 @@ def sort_glossary(POS):
     sorted_nouns=unsorted_nouns[unsorted_nouns[:, 1].argsort()]
     sorted_nouns=group_synoynms(reduce_glossary(sorted_nouns))
     # df_nouns = pd.DataFrame(sorted_nouns)
-
-#     unsorted_verbs = np.array(POS[1])
-#     sorted_verbs=unsorted_verbs[unsorted_verbs[:, 1].argsort()]
-#     sorted_verbs=group_synoynms(reduce_glossary(sorted_verbs))
-#     df_verbs = pd.DataFrame(sorted_verbs)
-#
-#     unsorted_adverbs = np.array(POS[2])
-#     sorted_adverbs=unsorted_adverbs[unsorted_adverbs[:, 1].argsort()]
-#     sorted_adverbs=group_synoynms(reduce_glossary(sorted_adverbs))
-#     df_adverbs = pd.DataFrame(sorted_adverbs)
-#
-#     unsorted_adjectives = np.array(POS[3])
-#     sorted_adjectives=unsorted_adjectives[unsorted_adjectives[:, 1].argsort()]
-#     sorted_adjectives=group_synoynms(reduce_glossary(sorted_adjectives))
-#     df_adjective = pd.DataFrame(sorted_adjectives)
-#
-#     sorted_POS.append(sorted_nouns)
-#     sorted_POS.append(sorted_verbs)
-#     sorted_POS.append(sorted_adverbs)
-#     sorted_POS.append(sorted_adjectives)
-#
-#     #glossary to excel
-#     with pd.ExcelWriter('Glossary.xls') as writer:
-#         df_nouns.to_excel(writer, sheet_name='Nouns')
-#         df_verbs.to_excel(writer, sheet_name='Verbs')
-#         df_adverbs.to_excel(writer, sheet_name='Adverbs')
-#         df_adjective.to_excel(writer, sheet_name='Adjectives')
-#     writer.save()
-#
-    return sorted_POS
-sort_glossary(divide_glossary(tokenify_glossary(items_HUL)))
-#print(sort_glossary(divide_glossary(tokenify_glossary(items_HUL))))
+    #
+    # unsorted_verbs = np.array(POS[1])
+    # sorted_verbs=unsorted_verbs[unsorted_verbs[:, 1].argsort()]
+    # sorted_verbs=group_synoynms(reduce_glossary(sorted_verbs))
+    # df_verbs = pd.DataFrame(sorted_verbs)
+    #
+    # unsorted_adverbs = np.array(POS[2])
+    # sorted_adverbs=unsorted_adverbs[unsorted_adverbs[:, 1].argsort()]
+    # sorted_adverbs=group_synoynms(reduce_glossary(sorted_adverbs))
+    # df_adverbs = pd.DataFrame(sorted_adverbs)
+    #
+    # unsorted_adjectives = np.array(POS[3])
+    # sorted_adjectives=unsorted_adjectives[unsorted_adjectives[:, 1].argsort()]
+    # sorted_adjectives=group_synoynms(reduce_glossary(sorted_adjectives))
+    # df_adjective = pd.DataFrame(sorted_adjectives)
+    #
+    # sorted_POS.append(sorted_nouns)
+    # sorted_POS.append(sorted_verbs)
+    # sorted_POS.append(sorted_adverbs)
+    # sorted_POS.append(sorted_adjectives)
+    #
+    # #glossary to excel
+    # with pd.ExcelWriter('Glossary.xls') as writer:
+    #     df_nouns.to_excel(writer, sheet_name='Nouns')
+    #     df_verbs.to_excel(writer, sheet_name='Verbs')
+    #     df_adverbs.to_excel(writer, sheet_name='Adverbs')
+    #     df_adjective.to_excel(writer, sheet_name='Adjectives')
+    # writer.save()
+    #
+    # return sorted_POS
+#sort_glossary(divide_glossary(tokenify_glossary(items_HUL)))
+print(sort_glossary(divide_glossary(tokenify_glossary(items_HUL))))
 
 
 #wb.save('Glossary.xls')
