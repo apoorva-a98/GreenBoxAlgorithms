@@ -235,5 +235,5 @@ print(Marico.sort_glossary(Marico.divide_glossary(Marico.tokenify_glossary(Maric
 Nestle = reports("Nestle", "Nestle 2017-2018_Annual Report.txt")
 print(Nestle.sort_glossary(Nestle.divide_glossary(Nestle.tokenify_glossary(Nestle.read_file()))))
 
-P&G = reports("P&G", "P&G 2018-2019_Annual Report.txt")
-print(P&G.sort_glossary(P&G.divide_glossary(P&G.tokenify_glossary(P&G.read_file()))))
+PnG = reports("PnG", "PnG 2018-2019_Annual Report.txt")
+print(PnG.sort_glossary(PnG.divide_glossary(PnG.tokenify_glossary(PnG.read_file()))))
