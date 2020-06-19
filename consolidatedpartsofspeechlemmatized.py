@@ -177,21 +177,25 @@ class reports:
         sorted_nouns=unsorted_nouns[unsorted_nouns[:, 1].argsort()]
         sorted_nouns=self.group_synoynms(self.reduce_glossary(sorted_nouns))
         df_nouns = pd.DataFrame(sorted_nouns)
+        df_nouns.columns=['frequency','text','lemma','pos','eng-tag','dependency','afinn sentiment','mcdonals sentiment','token id']
 
         unsorted_verbs = np.array(POS[1])
         sorted_verbs=unsorted_verbs[unsorted_verbs[:, 1].argsort()]
         sorted_verbs=self.group_synoynms(self.reduce_glossary(sorted_verbs))
         df_verbs = pd.DataFrame(sorted_verbs)
+        df_verbs.columns=['frequency','text','lemma','pos','eng-tag','dependency','afinn sentiment','mcdonals sentiment','token id']
 
         unsorted_adverbs = np.array(POS[2])
         sorted_adverbs=unsorted_adverbs[unsorted_adverbs[:, 1].argsort()]
         sorted_adverbs=self.group_synoynms(self.reduce_glossary(sorted_adverbs))
         df_adverbs = pd.DataFrame(sorted_adverbs)
+        df_adverbs.columns=['frequency','text','lemma','pos','eng-tag','dependency','afinn sentiment','mcdonals sentiment','token id']
 
         unsorted_adjectives = np.array(POS[3])
         sorted_adjectives=unsorted_adjectives[unsorted_adjectives[:, 1].argsort()]
         sorted_adjectives=self.group_synoynms(self.reduce_glossary(sorted_adjectives))
         df_adjective = pd.DataFrame(sorted_adjectives)
+        df_adjective.columns=['frequency','text','lemma','pos','eng-tag','dependency','afinn sentiment','mcdonals sentiment','token id']
 
         sorted_POS.append(sorted_nouns)
         sorted_POS.append(sorted_verbs)
@@ -210,7 +214,7 @@ class reports:
     #print(sort_glossary(divide_glossary(tokenify_glossary(read_file()))))
 
 
-HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
+HUL = reports("HUL", "HHUL 2018-2019_Annual Report.txt")
 print(HUL.sort_glossary(HUL.divide_glossary(HUL.tokenify_glossary(HUL.read_file()))))
 
 Colgate = reports("Colgate", "Colgate 2018-2019_Annual Report.txt")
