@@ -43,33 +43,91 @@ class reports:
         self.company = name
         self.filepath = path
 
-    # READING COMPANY REPORTS
-    def read_file(self):
-        report= open(self.filepath, "r")
-        report_text= report.read()
-        return report_text
-    #print(read_file())
 
-    # TOKANIZING REPORT
-    def tokenify_glossary(report):
-        buff = ''
-        sentences=[]
-        for letter in report:
-            letter=letter.lower()
-            if letter in avoid:
-                if buff != '':
-                    sentences.append(buff)
-                buff = ''
-            elif (buff is not None):
-                buff += letter
-        if buff is not None:
-            sentences.append(buff)
-            buff=''
-        return sentences
-    #print(tokenify_glossary(read_file()))
+    #CREATE GLOSSARY
+    def sort_glossary(self,POS):
+        sorted_POS=[]
+
+        unsorted_nouns = np.array(POS[0])
+        sorted_nouns=unsorted_nouns[unsorted_nouns[:, 1].argsort()]
+        sorted_nouns=self.group_synoynms(self.reduce_glossary(sorted_nouns))
+        df_nouns = pd.DataFrame(sorted_nouns)
+
+        unsorted_verbs = np.array(POS[1])
+        sorted_verbs=unsorted_verbs[unsorted_verbs[:, 1].argsort()]
+        sorted_verbs=self.group_synoynms(self.reduce_glossary(sorted_verbs))
+        df_verbs = pd.DataFrame(sorted_verbs)
+
+        unsorted_adverbs = np.array(POS[2])
+        sorted_adverbs=unsorted_adverbs[unsorted_adverbs[:, 1].argsort()]
+        sorted_adverbs=self.group_synoynms(self.reduce_glossary(sorted_adverbs))
+        df_adverbs = pd.DataFrame(sorted_adverbs)
+
+        unsorted_adjectives = np.array(POS[3])
+        sorted_adjectives=unsorted_adjectives[unsorted_adjectives[:, 1].argsort()]
+        sorted_adjectives=self.group_synoynms(self.reduce_glossary(sorted_adjectives))
+        df_adjective = pd.DataFrame(sorted_adjectives)
+
+        sorted_POS.append(sorted_nouns)
+        sorted_POS.append(sorted_verbs)
+        sorted_POS.append(sorted_adverbs)
+        sorted_POS.append(sorted_adjectives)
+
+        #glossary to excel
+        with pd.ExcelWriter("companies_glossary/"+self.company+".xlsx") as writer:
+            df_nouns.to_excel(writer, sheet_name='Nouns')
+            df_verbs.to_excel(writer, sheet_name='Verbs')
+            df_adverbs.to_excel(writer, sheet_name='Adverbs')
+            df_adjective.to_excel(writer, sheet_name='Adjectives')
+        writer.save()
+
+        return sorted_POS
+    #print(sort_glossary(divide_glossary(tokenify_glossary(read_file()))))
+
+
+    #GROUPING SYNONYMS
+    def remove_duplication_from_wordnet(self,keyword):
+        synonym_list=[]
+        synonym_list.append(keyword)
+        for syn in wordnet.synsets(keyword):
+            for synonym in syn.lemmas():
+                if synonym.name() not in synonym_list:
+                    synonym_list.append(synonym.name())
+        return synonym_list
+
+    def group_synoynms(self,POS):
+        token_id=1
+        for i in POS:
+            synonym_list= self.remove_duplication_from_wordnet(i[1])
+            for j in POS:
+                if j[1] in synonym_list and j[8] is not None:
+                    j[8] = token_id
+            token_id = token_id +1
+        return POS
+
+
+    #REDUCE DUPLICATE WORDS AND FREQUENCY
+    def reduce_glossary(self,sorted_words):
+        glossary=[]
+        token_id=''
+        while(len(sorted_words)>0):
+            count=1
+            word_frequency=[]
+            while(len(sorted_words)>1 and sorted_words[0][1]==sorted_words[1][1]):
+                count=count+1
+                sorted_words=np.delete(sorted_words, 1, 0)
+            if sorted_words[0][0] not in stop_words and len(sorted_words[0][0])>2 and sorted_words[0][0].isalpha():
+                word_frequency.append(count)
+                word_frequency.extend(sorted_words[0])
+                word_frequency.append(token_id)
+                glossary.append(word_frequency)
+            sorted_words=np.delete(sorted_words, 0, 0)
+            count=1
+        return glossary
+
 
     #GLOSSARY SRANDARDS
-    def divide_glossary(sentences):
+    def divide_glossary(self,sentences):
         glossary_nouns = []
         glossary_verbs = []
         glossary_adverbs = []
@@ -125,85 +183,33 @@ class reports:
         return POS
     #print(divide_glossary(tokenify_glossary(read_file())))
 
-    #REDUCE DUPLICATE WORDS AND FREQUENCY
-    def reduce_glossary(sorted_words):
-        glossary=[]
-        token_id=''
-        while(len(sorted_words)>0):
-            count=1
-            word_frequency=[]
-            while(len(sorted_words)>1 and sorted_words[0][1]==sorted_words[1][1]):
-                count=count+1
-                sorted_words=np.delete(sorted_words, 1, 0)
-            if sorted_words[0][0] not in stop_words and len(sorted_words[0][0])>2 and sorted_words[0][0].isalpha():
-                word_frequency.append(count)
-                word_frequency.extend(sorted_words[0])
-                word_frequency.append(token_id)
-                glossary.append(word_frequency)
-            sorted_words=np.delete(sorted_words, 0, 0)
-            count=1
-        return glossary
 
-    #GROUPING SYNONYMS
-    def remove_duplication_from_wordnet(keyword):
-        synonym_list=[]
-        synonym_list.append(keyword)
-        for syn in wordnet.synsets(keyword):
-            for synonym in syn.lemmas():
-                if synonym.name() not in synonym_list:
-                    synonym_list.append(synonym.name())
-        return synonym_list
+    # TOKANIZING REPORT
+    def tokenify_glossary(self,report):
+        buff = ''
+        sentences=[]
+        for letter in report:
+            letter=letter.lower()
+            if letter in avoid:
+                if buff != '':
+                    sentences.append(buff)
+                buff = ''
+            elif (buff is not None):
+                buff += letter
+        if buff is not None:
+            sentences.append(buff)
+            buff=''
+        return sentences
+    #print(tokenify_glossary(read_file()))
 
 
-    def group_synoynms(POS):
-        token_id=1
-        for i in POS:
-            synonym_list= remove_duplication_from_wordnet(i[1])
-            for j in POS:
-                if j[1] in synonym_list and j[8] is not None:
-                    j[8] = token_id
-            token_id = token_id +1
-        return POS
+    # READING COMPANY REPORTS
+    def read_file(self):
+        report= open(self.filepath, "r")
+        report_text= report.read()
+        return report_text
+    #print(read_file())
 
-    #CREATE GLOSSARY
-    def sort_glossary(self,POS):
-        sorted_POS=[]
-
-        unsorted_nouns = np.array(POS[0])
-        sorted_nouns=unsorted_nouns[unsorted_nouns[:, 1].argsort()]
-        sorted_nouns=group_synoynms(reduce_glossary(sorted_nouns))
-        df_nouns = pd.DataFrame(sorted_nouns)
-
-        unsorted_verbs = np.array(POS[1])
-        sorted_verbs=unsorted_verbs[unsorted_verbs[:, 1].argsort()]
-        sorted_verbs=group_synoynms(reduce_glossary(sorted_verbs))
-        df_verbs = pd.DataFrame(sorted_verbs)
-
-        unsorted_adverbs = np.array(POS[2])
-        sorted_adverbs=unsorted_adverbs[unsorted_adverbs[:, 1].argsort()]
-        sorted_adverbs=group_synoynms(reduce_glossary(sorted_adverbs))
-        df_adverbs = pd.DataFrame(sorted_adverbs)
-
-        unsorted_adjectives = np.array(POS[3])
-        sorted_adjectives=unsorted_adjectives[unsorted_adjectives[:, 1].argsort()]
-        sorted_adjectives=group_synoynms(reduce_glossary(sorted_adjectives))
-        df_adjective = pd.DataFrame(sorted_adjectives)
-
-        sorted_POS.append(sorted_nouns)
-        sorted_POS.append(sorted_verbs)
-        sorted_POS.append(sorted_adverbs)
-        sorted_POS.append(sorted_adjectives)
-
-        #glossary to excel
-        with pd.ExcelWriter(self.company) as writer:
-            df_nouns.to_excel(writer, sheet_name='Nouns')
-            df_verbs.to_excel(writer, sheet_name='Verbs')
-            df_adverbs.to_excel(writer, sheet_name='Adverbs')
-            df_adjective.to_excel(writer, sheet_name='Adjectives')
-        writer.save()
-
-        return sorted_POS
-    #print(sort_glossary(divide_glossary(tokenify_glossary(read_file()))))
 
 HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
-x.print(sort_glossary(divide_glossary(tokenify_glossary(read_file()))))
+print(HUL.sort_glossary(HUL.divide_glossary(HUL.tokenify_glossary(HUL.read_file()))))
