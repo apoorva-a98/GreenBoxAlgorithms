@@ -16,7 +16,7 @@ nlp = spacy.load("en_core_web_sm")
 
 # OPENING JSON SENTIMENT DICTIONARY
 with open('afinn-165.json') as f:
-  data = json.load(f)
+  items_afinn = json.load(f)
 
 # OPENING LOUGHRAN MCDONALD SENTIMENT WORD LIST
 file_path = 'LoughranMcDonald_SentimentWordLists_2018.xlsx'
@@ -91,8 +91,8 @@ class reports:
                 word.append(token.dep_)
 
                 #afinn sentiments
-                if token.text in data:              #apoorva create a function for this later
-                    word.append(data[token.text])
+                if token.text in items_afinn:              #apoorva create a function for this later
+                    word.append(items_afinn[token.text])
                 else:
                     word.append('')
 
@@ -214,26 +214,26 @@ class reports:
     #print(sort_glossary(divide_glossary(tokenify_glossary(read_file()))))
 
 
-# HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
-# print(HUL.sort_glossary(HUL.divide_glossary(HUL.tokenify_glossary(HUL.read_file()))))
-#
-# Colgate = reports("Colgate", "Colgate 2018-2019_Annual Report.txt")
-# print(Colgate.sort_glossary(Colgate.divide_glossary(Colgate.tokenify_glossary(Colgate.read_file()))))
-#
-# ITC = reports("ITC", "ITC 2018-2019 Annual Report.txt")
-# print(ITC.sort_glossary(ITC.divide_glossary(ITC.tokenify_glossary(ITC.read_file()))))
-#
-# Dabur = reports("Dabur", "Dabur 2018-19_Annual Report.txt")
-# print(Dabur.sort_glossary(Dabur.divide_glossary(Dabur.tokenify_glossary(Dabur.read_file()))))
-#
-# Godrej = reports("Godrej", "Godrej 2018-2019_Annual Report.txt")
-# print(Godrej.sort_glossary(Godrej.divide_glossary(Godrej.tokenify_glossary(Godrej.read_file()))))
-#
-# Marico = reports("Marico", "Marico 2018-2019_Annual Report.txt")
-# print(Marico.sort_glossary(Marico.divide_glossary(Marico.tokenify_glossary(Marico.read_file()))))
-#
-# Nestle = reports("Nestle", "Nestle 2017-2018_Annual Report.txt")
-# print(Nestle.sort_glossary(Nestle.divide_glossary(Nestle.tokenify_glossary(Nestle.read_file()))))
+HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
+print(HUL.sort_glossary(HUL.divide_glossary(HUL.tokenify_glossary(HUL.read_file()))))
+
+Colgate = reports("Colgate", "Colgate 2018-2019_Annual Report.txt")
+print(Colgate.sort_glossary(Colgate.divide_glossary(Colgate.tokenify_glossary(Colgate.read_file()))))
+
+ITC = reports("ITC", "ITC 2018-2019 Annual Report.txt")
+print(ITC.sort_glossary(ITC.divide_glossary(ITC.tokenify_glossary(ITC.read_file()))))
+
+Dabur = reports("Dabur", "Dabur 2018-19_Annual Report.txt")
+print(Dabur.sort_glossary(Dabur.divide_glossary(Dabur.tokenify_glossary(Dabur.read_file()))))
+
+Godrej = reports("Godrej", "Godrej 2018-2019_Annual Report.txt")
+print(Godrej.sort_glossary(Godrej.divide_glossary(Godrej.tokenify_glossary(Godrej.read_file()))))
+
+Marico = reports("Marico", "Marico 2018-2019_Annual Report.txt")
+print(Marico.sort_glossary(Marico.divide_glossary(Marico.tokenify_glossary(Marico.read_file()))))
+
+Nestle = reports("Nestle", "Nestle 2017-2018_Annual Report.txt")
+print(Nestle.sort_glossary(Nestle.divide_glossary(Nestle.tokenify_glossary(Nestle.read_file()))))
 
 PnG = reports("PnG", "P&G 2018-2019_Annual Report.txt")
 print(PnG.sort_glossary(PnG.divide_glossary(PnG.tokenify_glossary(PnG.read_file()))))
