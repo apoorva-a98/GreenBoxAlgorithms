@@ -18,39 +18,60 @@ file_path[5]='companies_glossary/Marico.xlsx'
 file_path[6]='companies_glossary/Nestle.xlsx'
 file_path[7]='companies_glossary/PnG.xlsx'
 
-PoS=['Nouns','Verbs','Adverbs','Adjectives']
+class standards_and_sentiments:
+    def __init__(self, POS):
+        self.partofspeech = POS
 
-#READ Nouns
-Nouns=[]
-for company in file_path:
-    sheet = []
-    sheet = pd.read_excel(company, sheet_name='Nouns', usecols='B:I')
-    sheet = sheet.values.tolist()
-    Nouns.extend(sheet)
-# print(Nouns)
+    #READ PoS
+    def read_partofspeech(self):
+        master_list=[]
+        for company in file_path:
+            sheet = []
+            sheet = pd.read_excel(company, sheet_name=self.partofspeech, usecols='B:I')
+            sheet = sheet.values.tolist()
+            master_list.extend(sheet)
+        return master_list
+    # print(Nouns)
 
-def reduce_glossary(sorted_words):
-    glossary=[]
-    while(len(sorted_words)>0):
-        word_frequency=[]
-        while(len(sorted_words)>1 and sorted_words[0][2]==sorted_words[1][2]):
-            sorted_words[0][0]=sorted_words[0][0]+sorted_words[1][0]
-            sorted_words=np.delete(sorted_words, 1, 0)
-        if int(sorted_words[0][0]) >= 5000:
-            word_frequency.extend(sorted_words[0])
-            glossary.append(word_frequency)
-        sorted_words=np.delete(sorted_words, 0, 0)
-    return glossary
 
-#Write Nouns
-unsorted_nouns = np.array(Nouns)
-sorted_nouns=unsorted_nouns[unsorted_nouns[:, 1].argsort()]
-sorted_nouns=reduce_glossary(sorted_nouns)
-df_nouns = pd.DataFrame(sorted_nouns)
-df_nouns.columns=['frequency','text','lemma','pos','eng-tag','dependency','afinn sentiment','mcdonals sentiment']
-print(df_nouns)
+    #REMOVE Duplicates
+    def reduce_glossary(self,sorted_words):
+        glossary=[]
+        while(len(sorted_words)>0):
+            keyword=[]
+            while(len(sorted_words)>1 and sorted_words[0][2]==sorted_words[1][2]):
+                sorted_words[0][0]=sorted_words[0][0]+sorted_words[1][0]
+                sorted_words=np.delete(sorted_words, 1, 0)
+            if int(sorted_words[0][0]) >= 5000:
+                keyword.extend(sorted_words[0])
+                glossary.append(keyword)
+            sorted_words=np.delete(sorted_words, 0, 0)
+        return glossary
 
-#glossary to excel
-with pd.ExcelWriter("companies_glossary/Nouns.xlsx") as writer:
-    df_nouns.to_excel(writer, sheet_name='Nouns')
-writer.save()
+
+    #WRITE PoS
+    def write_partofspeech(self):
+        unsorted_words = np.array(self.read_partofspeech())
+        sorted_words=unsorted_words[unsorted_words[:, 1].argsort()]
+        sorted_words=self.reduce_glossary(sorted_words)
+        df_words = pd.DataFrame(sorted_words)
+        df_words.columns=['frequency','text','lemma','pos','eng-tag','dependency','afinn sentiment','mcdonals sentiment']
+        # print(df_words)
+
+        #glossary to excel
+        with pd.ExcelWriter("companies_glossary/"+self.partofspeech+".xlsx") as writer:
+            df_words.to_excel(writer, sheet_name=self.partofspeech)
+        writer.save()
+
+
+Nouns= standards_and_sentiments("Nouns")
+Nouns.write_partofspeech()
+
+Verbs= standards_and_sentiments("Verbs")
+Verbs.write_partofspeech()
+
+Adverbs= standards_and_sentiments("Adverbs")
+Adverbs.write_partofspeech()
+
+Adjectives= standards_and_sentiments("Adjectives")
+Adjectives.write_partofspeech()
