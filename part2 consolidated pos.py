@@ -33,11 +33,12 @@ def reduce_glossary(sorted_words):
     glossary=[]
     while(len(sorted_words)>0):
         word_frequency=[]
-        while(len(sorted_words)>1 and sorted_words[0][1]==sorted_words[1][1]):
+        while(len(sorted_words)>1 and sorted_words[0][2]==sorted_words[1][2]):
             sorted_words[0][0]=sorted_words[0][0]+sorted_words[1][0]
             sorted_words=np.delete(sorted_words, 1, 0)
-        word_frequency.extend(sorted_words[0])
-        glossary.append(word_frequency)
+        if int(sorted_words[0][0]) >= 5000:
+            word_frequency.extend(sorted_words[0])
+            glossary.append(word_frequency)
         sorted_words=np.delete(sorted_words, 0, 0)
     return glossary
 
