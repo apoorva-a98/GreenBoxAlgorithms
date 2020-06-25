@@ -216,11 +216,11 @@ class reports:
     #print(sort_glossary(divide_glossary(tokenify_glossary(read_file()))))
 
 
-HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
-print(HUL.sort_glossary(HUL.divide_glossary(HUL.tokenify_glossary(HUL.read_file()))))
-
-Colgate = reports("Colgate", "Colgate 2018-2019_Annual Report.txt")
-print(Colgate.sort_glossary(Colgate.divide_glossary(Colgate.tokenify_glossary(Colgate.read_file()))))
+# HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
+# print(HUL.sort_glossary(HUL.divide_glossary(HUL.tokenify_glossary(HUL.read_file()))))
+#
+# Colgate = reports("Colgate", "Colgate 2018-2019_Annual Report.txt")
+# print(Colgate.sort_glossary(Colgate.divide_glossary(Colgate.tokenify_glossary(Colgate.read_file()))))
 
 ITC = reports("ITC", "ITC 2018-2019 Annual Report.txt")
 print(ITC.sort_glossary(ITC.divide_glossary(ITC.tokenify_glossary(ITC.read_file()))))
