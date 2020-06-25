@@ -1,3 +1,16 @@
+#--psudo code--
+#
+# for nouns:
+#     group by reporting requirements
+#     store the remaining words in AbstractNouns = []
+#
+# for verbs, adverbs, adjectives, abstractnouns:
+#     group by words with afinn sentiment
+#     truncate the words without sentiment
+
+
+#!/usr/bin/env python3
+
 import xlwt
 from xlwt import Workbook
 import spacy
@@ -6,7 +19,6 @@ import numpy as np
 import math
 import pandas as pd
 from pandas import DataFrame
-import json
 # from google.colab import drive
 # drive.mount('/gdrive')
 

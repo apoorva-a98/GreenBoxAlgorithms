@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from nltk.corpus import wordnet
+# from nltk.corpus import wordnet
 import xlwt
 from xlwt import Workbook
 import spacy
@@ -36,7 +36,8 @@ f_stop_words=open("StopWords_GenericLong.txt", "r")
 stop_words=[str(i[0:-1]) for i in f_stop_words]
 avoid=['@','#','$','%','^','&','*','(',')','_','=','+','[',']','|','\n','\t','<','>','/']
 
-
+#ABBREVIATIONS TO RETAIN
+abbreviations=['CO2', 'CH4', 'N2O', 'HFCs', 'PFCs', 'SF6', 'NF3', 'POP', 'VOC', 'HAP', 'PM', 'GWP', 'CFC-11', 'ODS', 'NOX', 'SO', 'RO', 'MWh', 'KW', 'IR', 'ODR', 'LDR', 'AR', 'ILO', 'OECD', 'WHO', 'LGBT', 'CSR', "ICC'S", 'GST', 'EBITDA','IFRS', 'IASB', 'IPSAS', 'IFAC', 'EVG&D', 'P&L', 'ECA']
 
 class reports:
     def __init__(self, name, path):
@@ -148,24 +149,34 @@ class reports:
     #         token_id = token_id +1
     #     return POS
 
+    #RETAINING ABBREVIATIONS
+    def is_abbreviation(word):
+        if worn in abbreviations:
+            return 1
+        else:
+            return 0
 
     #REDUCE DUPLICATE WORDS AND FREQUENCY
     def reduce_glossary(self,sorted_words):
         glossary=[]
         # token_id=''
         while(len(sorted_words)>0):
+            abb=0
             count=1
             word_frequency=[]
             while(len(sorted_words)>1 and sorted_words[0][1]==sorted_words[1][1]):
                 count=count+1
                 sorted_words=np.delete(sorted_words, 1, 0)
-            if sorted_words[0][0] not in stop_words and len(sorted_words[0][0])>2 and sorted_words[0][0].isalpha():
+            if  is_abbreviation(sorted_words[0][0]):
+                word_frequency.append(count)
+                word_frequency.extend(sorted_words[0])
+                abb=1
+            if sorted_words[0][0] not in stop_words and len(sorted_words[0][0])>2 and sorted_words[0][0].isalpha() and abb==0:
                 word_frequency.append(count)
                 word_frequency.extend(sorted_words[0])
                 # word_frequency.append(token_id)
-                glossary.append(word_frequency)
+            glossary.append(word_frequency)
             sorted_words=np.delete(sorted_words, 0, 0)
-            count=1
         return glossary
 
 
@@ -216,11 +227,11 @@ class reports:
     #print(sort_glossary(divide_glossary(tokenify_glossary(read_file()))))
 
 
-# HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
-# print(HUL.sort_glossary(HUL.divide_glossary(HUL.tokenify_glossary(HUL.read_file()))))
-#
-# Colgate = reports("Colgate", "Colgate 2018-2019_Annual Report.txt")
-# print(Colgate.sort_glossary(Colgate.divide_glossary(Colgate.tokenify_glossary(Colgate.read_file()))))
+HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
+print(HUL.sort_glossary(HUL.divide_glossary(HUL.tokenify_glossary(HUL.read_file()))))
+
+Colgate = reports("Colgate", "Colgate 2018-2019_Annual Report.txt")
+print(Colgate.sort_glossary(Colgate.divide_glossary(Colgate.tokenify_glossary(Colgate.read_file()))))
 
 ITC = reports("ITC", "ITC 2018-2019 Annual Report.txt")
 print(ITC.sort_glossary(ITC.divide_glossary(ITC.tokenify_glossary(ITC.read_file()))))
