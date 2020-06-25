@@ -1,4 +1,4 @@
-﻿GOVERNANCE:
+GOVERNANCE:
 
 
 For each material topic, the reporting organization shall report the following information:
@@ -304,7 +304,7 @@ v. Least concern
 
 305
 a. Gross direct (Scope 1) GHG emissions in metric tons of CO2 equivalent.
-b. Gases included in the calculation; whether CO2, CH4, N2O, HFCs, PFCs, SF6, NF3, or all.
+b. Gases included in the calculation whether CO2 CH4 N2O HFCs PFCs SF6 NF3 or all.
 c. Biogenic CO2 emissions in metric tons of CO2 equivalent.
 d. Base year for the calculation, if applicable, including:
 i. the rationale for choosing it;
@@ -317,7 +317,7 @@ g. Standards, methodologies, assumptions, and/or calculation tools used.
 
 a. Gross location-based energy indirect (Scope 2) GHG emissions in metric tons of CO2 equivalent.
 b. If applicable, gross market-based energy indirect (Scope 2) GHG emissions in metric tons of CO2 equivalent.
-c. If available, the gases included in the calculation; whether CO2, CH4, N2O, HFCs, PFCs, SF6, NF3, or all.
+c. If available, the gases included in the calculation; whether CO2 CH4 N2O HFCs PFCs SF6 NF3 or all.
 d. Base year for the calculation, if applicable, including:
 i. the rationale for choosing it;
 ii. emissions in the base year;
@@ -328,7 +328,7 @@ g. Standards, methodologies, assumptions, and/or calculation tools used
 
 
 a. Gross other indirect (Scope 3) GHG emissions in metric tons of CO2 equivalent.
-b. If available, the gases included in the calculation; whether CO2, CH4, N2O, HFCs, PFCs, SF6, NF3, or all.
+b. If available, the gases included in the calculation; whether CO2 CH4 N2O HFCs PFCs SF6 NF3 or all.
 c. Biogenic CO2 emissions in metric tons of CO2 equivalent.
 d. Other indirect (Scope 3) GHG emissions categories and activities included in the calculation.
 e. Base year for the calculation, if applicable, including:
@@ -342,11 +342,11 @@ g. Standards, methodologies, assumptions, and/or calculation tools used.
 a. GHG emissions intensity ratio for the organization.
 b. Organization-specific metric (the denominator) chosen to calculate the ratio.
 c. Types of GHG emissions included in the intensity ratio; whether direct (Scope 1), energy indirect (Scope 2), and/or other indirect (Scope 3).
-d. Gases included in the calculation; whether CO2, CH4, N2O, HFCs, PFCs, SF6, NF3, or all.
+d. Gases included in the calculation; whether CO2 CH4 N2O HFCs PFCs SF6 NF3 or all.
 
 
 a. GHG emissions reduced as a direct result of reduction initiatives, in metric tons of CO2 equivalent
-b.Gases included in the calculation; whether CO2, CH4, N2O, HFCs, PFCs, SF6, NF3, or all.
+b.Gases included in the calculation; whether CO2 CH4 N2O HFCs PFCs SF6 NF3 or all.
 c. Base year or baseline, including the rationale for choosing it.
 d. Scopes in which reductions took place; whether direct (Scope 1), energy indirect (Scope 2), and/or other indirect (Scope 3).
 e. Standards, methodologies, assumptions, and/or calculation tools used.

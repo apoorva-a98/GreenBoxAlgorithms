@@ -37,7 +37,7 @@ stop_words=[str(i[0:-1]) for i in f_stop_words]
 avoid=['@','#','$','%','^','&','*','(',')','_','=','+','[',']','|','\n','\t','<','>','/']
 
 #ABBREVIATIONS TO RETAIN
-abbreviations=['CO2', 'CH4', 'N2O', 'HFCs', 'PFCs', 'SF6', 'NF3', 'POP', 'VOC', 'HAP', 'PM', 'GWP', 'CFC-11', 'ODS', 'NOX', 'SO', 'RO', 'MWh', 'KW', 'IR', 'ODR', 'LDR', 'AR', 'ILO', 'OECD', 'WHO', 'LGBT', 'CSR', "ICC'S", 'GST', 'EBITDA','IFRS', 'IASB', 'IPSAS', 'IFAC', 'EVG&D', 'P&L', 'ECA']
+abbreviations=['co2','ch4','n2o','hfcs', 'pfcs', 'sf6', 'nf3', 'pop', 'voc', 'hap', 'pm', 'gwp', 'cfc11', 'ods', 'nox', 'so', 'so', 'mwh', 'kw', 'ir', 'odr', 'ldr', 'ar', 'ilo', 'oecd', 'who', 'lgbt', 'csr', "iccs", 'gst', 'ebitda','ifrs', 'iasb', 'ipsas', 'ifac', 'evgd', 'pl', 'eca']
 
 class reports:
     def __init__(self, name, path):
@@ -77,8 +77,8 @@ class reports:
         glossary_verbs = []
         glossary_adverbs = []
         glossary_adjectives = []
-        glossary_POS=[]
         POS=[]
+
 
         for sentence in sentences:
             doc = nlp(sentence)
@@ -108,7 +108,7 @@ class reports:
                 #     word.append('')
 
                 #parts of speech segregation
-                if token.pos_ == 'NOUN':
+                if token.pos_ == 'NOUN' or token.pos_ == 'PROPN':
                     glossary_nouns.append(word)
                 elif token.pos_ == 'VERB':
                     glossary_verbs.append(word)
@@ -116,8 +116,6 @@ class reports:
                     glossary_adverbs.append(word)
                 elif token.pos_ == 'ADJ':
                     glossary_adjectives.append(word)
-                else:
-                    glossary_POS.append(word)
 
             # 3D List
             POS.append(glossary_nouns)
@@ -150,8 +148,8 @@ class reports:
     #     return POS
 
     #RETAINING ABBREVIATIONS
-    def is_abbreviation(word):
-        if worn in abbreviations:
+    def is_abbreviation(self,word):
+        if word in abbreviations:
             return 1
         else:
             return 0
@@ -167,15 +165,16 @@ class reports:
             while(len(sorted_words)>1 and sorted_words[0][1]==sorted_words[1][1]):
                 count=count+1
                 sorted_words=np.delete(sorted_words, 1, 0)
-            if  is_abbreviation(sorted_words[0][0]):
+            if  self.is_abbreviation(sorted_words[0][0]) == 1:
                 word_frequency.append(count)
                 word_frequency.extend(sorted_words[0])
+                glossary.append(word_frequency)
                 abb=1
             if sorted_words[0][0] not in stop_words and len(sorted_words[0][0])>2 and sorted_words[0][0].isalpha() and abb==0:
                 word_frequency.append(count)
                 word_frequency.extend(sorted_words[0])
                 # word_frequency.append(token_id)
-            glossary.append(word_frequency)
+                glossary.append(word_frequency)
             sorted_words=np.delete(sorted_words, 0, 0)
         return glossary
 
@@ -251,5 +250,5 @@ print(Nestle.sort_glossary(Nestle.divide_glossary(Nestle.tokenify_glossary(Nestl
 PnG = reports("PnG", "P&G 2018-2019_Annual Report.txt")
 print(PnG.sort_glossary(PnG.divide_glossary(PnG.tokenify_glossary(PnG.read_file()))))
 
-RR = reports("Reporting Requirements", "Reporting Requirements.txt")
-print(RR.sort_glossary(RR.divide_glossary(RR.tokenify_glossary(RR.read_file()))))
+# RR = reports("Reporting Requirements", "Reporting Requirements.txt")
+# print(RR.sort_glossary(RR.divide_glossary(RR.tokenify_glossary(RR.read_file()))))
