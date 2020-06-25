@@ -87,8 +87,8 @@ class reports:
                 word.append(token.text)
                 word.append(token.lemma_)
                 word.append(token.pos_)
-                word.append(token.tag_)
-                word.append(token.dep_)
+                # word.append(token.tag_)
+                # word.append(token.dep_)
 
                 #afinn sentiments
                 if token.text in items_afinn:              #apoorva create a function for this later
@@ -97,14 +97,14 @@ class reports:
                     word.append('')
 
                 #mcdonald sentiments
-                mc_rating=0
-                for i in range(7):                  #apoorva create a function for this later
-                    if token.text in items_mcdonals[i] or token.lemma_ in items_mcdonals[i]:
-                        mc_rating=i
-                if mc_rating != 0:
-                    word.append(mc_rating)
-                else:
-                    word.append('')
+                # mc_rating=0
+                # for i in range(7):                  #apoorva create a function for this later
+                #     if token.text in items_mcdonals[i] or token.lemma_ in items_mcdonals[i]:
+                #         mc_rating=i
+                # if mc_rating != 0:
+                #     word.append(mc_rating)
+                # else:
+                #     word.append('')
 
                 #parts of speech segregation
                 if token.pos_ == 'NOUN':
@@ -129,24 +129,24 @@ class reports:
 
 
     #GROUPING SYNONYMS
-    def remove_duplication_from_wordnet(self,keyword):
-        synonym_list=[]
-        synonym_list.append(keyword)
-        for syn in wordnet.synsets(keyword):
-            for synonym in syn.lemmas():
-                if synonym.name() not in synonym_list:
-                    synonym_list.append(synonym.name())
-        return synonym_list
-
-    def group_synoynms(self,POS):
-        token_id=1
-        for i in POS:
-            synonym_list= self.remove_duplication_from_wordnet(i[1])
-            for j in POS:
-                if j[1] in synonym_list and j[8] is not None:
-                    j[8] = token_id
-            token_id = token_id +1
-        return POS
+    # def remove_duplication_from_wordnet(self,keyword):
+    #     synonym_list=[]
+    #     synonym_list.append(keyword)
+    #     for syn in wordnet.synsets(keyword):
+    #         for synonym in syn.lemmas():
+    #             if synonym.name() not in synonym_list:
+    #                 synonym_list.append(synonym.name())
+    #     return synonym_list
+    #
+    # def group_synoynms(self,POS):
+    #     token_id=1
+    #     for i in POS:
+    #         synonym_list= self.remove_duplication_from_wordnet(i[1])
+    #         for j in POS:
+    #             if j[1] in synonym_list and j[8] is not None:
+    #                 j[8] = token_id
+    #         token_id = token_id +1
+    #     return POS
 
 
     #REDUCE DUPLICATE WORDS AND FREQUENCY
@@ -177,25 +177,26 @@ class reports:
         sorted_nouns=unsorted_nouns[unsorted_nouns[:, 1].argsort()]
         sorted_nouns=self.group_synoynms(self.reduce_glossary(sorted_nouns))
         df_nouns = pd.DataFrame(sorted_nouns)
-        df_nouns.columns=['frequency','text','lemma','pos','eng-tag','dependency','afinn sentiment','mcdonals sentiment','token id']
+        # df_nouns.columns=['frequency','text','lemma','pos','eng-tag','dependency','afinn sentiment','mcdonals sentiment','token id']
+        df_nouns.columns=['frequency','text','lemma','pos','afinn sentiment','token id']
 
         unsorted_verbs = np.array(POS[1])
         sorted_verbs=unsorted_verbs[unsorted_verbs[:, 1].argsort()]
         sorted_verbs=self.group_synoynms(self.reduce_glossary(sorted_verbs))
         df_verbs = pd.DataFrame(sorted_verbs)
-        df_verbs.columns=['frequency','text','lemma','pos','eng-tag','dependency','afinn sentiment','mcdonals sentiment','token id']
+        df_verbs.columns=['frequency','text','lemma','pos','afinn sentiment','token id']
 
         unsorted_adverbs = np.array(POS[2])
         sorted_adverbs=unsorted_adverbs[unsorted_adverbs[:, 1].argsort()]
         sorted_adverbs=self.group_synoynms(self.reduce_glossary(sorted_adverbs))
         df_adverbs = pd.DataFrame(sorted_adverbs)
-        df_adverbs.columns=['frequency','text','lemma','pos','eng-tag','dependency','afinn sentiment','mcdonals sentiment','token id']
+        df_adverbs.columns=['frequency','text','lemma','pos','afinn sentiment','token id']
 
         unsorted_adjectives = np.array(POS[3])
         sorted_adjectives=unsorted_adjectives[unsorted_adjectives[:, 1].argsort()]
         sorted_adjectives=self.group_synoynms(self.reduce_glossary(sorted_adjectives))
         df_adjective = pd.DataFrame(sorted_adjectives)
-        df_adjective.columns=['frequency','text','lemma','pos','eng-tag','dependency','afinn sentiment','mcdonals sentiment','token id']
+        df_adjective.columns=['frequency','text','lemma','pos','afinn sentiment','token id']
 
         sorted_POS.append(sorted_nouns)
         sorted_POS.append(sorted_verbs)
