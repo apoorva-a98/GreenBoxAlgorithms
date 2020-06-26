@@ -53,7 +53,7 @@ class standards_and_sentiments:
     #WRITE PoS
     def write_partofspeech(self):
         unsorted_words = np.array(self.read_partofspeech())
-        sorted_words=unsorted_words[unsorted_words[:, 2].argsort()]
+        sorted_words=unsorted_words[unsorted_words[:, 1].argsort()]
         sorted_words=self.reduce_glossary(sorted_words)
         df_words = pd.DataFrame(sorted_words)
         df_words.columns=['frequency','text','lemma','pos','afinn sentiment']
