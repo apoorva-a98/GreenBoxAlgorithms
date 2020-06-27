@@ -31,9 +31,15 @@ from pandas import DataFrame
 # !python -m spacy download en_core_web_lg
 # import en_core_web_lg
 # nlp = en_core_web_lg.load()
-nlp = spacy.load("en_core_web_md")
+# *nlp = spacy.load("en_core_web_md")
 
 # path = "/content/drive/My Drive/GreenBoxAlgorithms/"
+
+frequency=1
+text=2
+lemma=3
+pos=3
+sentiment=4
 
 class standards_and_sentiments:
 
@@ -47,34 +53,50 @@ class standards_and_sentiments:
             #sheet = pd.read_excel(path+'/'+self.partofspeech+'.xlsx', sheet_name="Nouns", usecols='B:I')
             sheet = sheet.values.tolist()
             unsorted_words = np.array(sheet)
-            sorted_words=unsorted_words[unsorted_words[:, 4].argsort()]
+            sorted_words=unsorted_words[unsorted_words[:, sentiment].argsort()]
             sorted_words=sorted_words.tolist()
             return sorted_words
     #print(read_partofspeech("Nouns"))
 
 
-    # VECTORISING GLOSSARY
-    def sorting_similar_words(self,words):
-        i=0
+    # GROUPING DESCRIPTIVE WORDS
+    def sort_sentiments(self, words):
         token_id=1
-        while(i < len(words) and words[i][4] is not None):
-            count=0
-            for j in range(len(words)):
-                token = nlp(words[i][2]+' '+words[j][2])
-                if int(token[0].similarity(token[1])*100) >= 50 and words[j][4 is None]:
-                    print(token[0].lemma_, token[1].lemma_, int(token[0].similarity(token[1])*100))
-                    words[j].append(token_id)
+        grouped_words=[]
+
+        while(len(words)>0 and words[0][sentiment] is not None):
+            words[0].append(token_id)
+            words[0].append('')
+            print(words[0])
+            grouped_words.append(words[0])
+
+            for j in range(1,len(words)):
+                index=[]
+                token = nlp(words[0][lemma]+' '+words[j][lemma])
+                if int(token[0].similarity(token[1])*100) >= 50 and words[j][sentiment] == '':
+                    word[j][sentiment]=words[0][sentiment]
+                    word[j].append(token_id)
                     words[j].append(token[0].similarity(token[1])*100)
-                    place_holder=words[j]
-                    words[j]=words[i+1+count]
-                    words[i+1+count]=place_holder
-                    count=count+1
-            words[i].append(token_id)
-            words[i].append(" ")
+                    print(words[j])
+                    index.append(j)
+            print('')
+
+            index.reverse()
+            for i in index:
+                grouped_words.append(word[i])
+                words.pop(i)
+            words=np.delete(words, 0, 0)
             token_id=token_id+1
-            i=i+count+1
+
+        return grouped_words
+
+
+    #WRITE PoS
+    def write_partofspeech(self, words):
+        words = np.array(words)
         df_words = pd.DataFrame(words)
         df_words.columns=['frequency','text','lemma','pos','afinn sentiment','token_id','similarity']
+        # print(df_words)
 
         #glossary to excel
         with pd.ExcelWriter(path+'/'+self.partofspeech+"vectorised.xlsx") as writer:
@@ -85,8 +107,9 @@ class standards_and_sentiments:
 # ReportingRequirements=standards_and_sentiments("ReportingRequirements")
 # ReportingRequirements.sorting_similar_words(ReportingRequirements.read_partofspeech())
 
-ReportingRequirements=standards_and_sentiments("Reporting Requirements")
-print(ReportingRequirements.read_partofspeech())
+RR=standards_and_sentiments("Reporting Requirements")
+# RR.write_partofspeech(RR.sort_sentiments(RR.read_partofspeech()))
+RR.sort_sentiments(RR.read_partofspeech())
 
 # Nouns=standards_and_sentiments("Nouns")
 # Nouns.sorting_similar_words(Nouns.read_partofspeech())
