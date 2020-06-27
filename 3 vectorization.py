@@ -31,7 +31,7 @@ from pandas import DataFrame
 # !python -m spacy download en_core_web_lg
 # import en_core_web_lg
 # nlp = en_core_web_lg.load()
-# *nlp = spacy.load("en_core_web_md")
+nlp = spacy.load("en_core_web_md")
 
 # path = "/content/drive/My Drive/GreenBoxAlgorithms/"
 
@@ -99,7 +99,7 @@ class standards_and_sentiments:
         # print(df_words)
 
         #glossary to excel
-        with pd.ExcelWriter(path+'/'+self.partofspeech+"vectorised.xlsx") as writer:
+        with pd.ExcelWriter("companies_glossary/"+self.partofspeech+"vectorised.xlsx") as writer:
             df_words.to_excel(writer, sheet_name=self.partofspeech)
         writer.save()
 
