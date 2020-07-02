@@ -249,6 +249,9 @@ print(Nestle.sort_glossary(Nestle.divide_glossary(Nestle.tokenify_glossary(Nestl
 
 PnG = reports("PnG", "P&G 2018-2019_Annual Report.txt")
 print(PnG.sort_glossary(PnG.divide_glossary(PnG.tokenify_glossary(PnG.read_file()))))
-
+#
 # RR = reports("Reporting Requirements", "Reporting Requirements.txt")
 # print(RR.sort_glossary(RR.divide_glossary(RR.tokenify_glossary(RR.read_file()))))
+#
+# Gl = reports("Glossary", "Glossary.txt")
+# print(Gl.sort_glossary(Gl.divide_glossary(Gl.tokenify_glossary(Gl.read_file()))))

@@ -49,7 +49,7 @@ class standards_and_sentiments:
     #READ PoS
     def read_partofspeech(self):
             sheet = []
-            sheet = pd.read_excel("companies_glossary/"+self.partofspeech+".xlsx", usecols='B:F')
+            sheet = pd.read_excel(path+'/'+self.partofspeech+".xlsx", usecols='B:F')
             #sheet = pd.read_excel(path+'/'+self.partofspeech+'.xlsx', sheet_name="Nouns", usecols='B:I')
             sheet = sheet.values.tolist()
             unsorted_words = np.array(sheet)
@@ -64,27 +64,27 @@ class standards_and_sentiments:
         token_id=1
         grouped_words=[]
 
-        while(len(words)>0 and words[0][sentiment] is not None):
+        # while(len(words)>0 and words[0][sentiment] is not None):
+        while(len(words)>0 and words[0][sentiment] != 'nan'):
             words[0].append(token_id)
             words[0].append('')
-            print(words[0])
             grouped_words.append(words[0])
 
             for j in range(1,len(words)):
                 index=[]
                 token = nlp(words[0][lemma]+' '+words[j][lemma])
-                if int(token[0].similarity(token[1])*100) >= 50 and words[j][sentiment] == '':
-                    word[j][sentiment]=words[0][sentiment]
-                    word[j].append(token_id)
+                if int(token[0].similarity(token[1])*100) >= 40 and words[j][sentiment]=='nan':
+                    # print(words[0][lemma], words[j][lemma], words[j][sentiment], token[0].similarity(token[1])*100)
+                    words[j][sentiment]=words[0][sentiment]
+                    words[j].append(token_id)
                     words[j].append(token[0].similarity(token[1])*100)
+                    grouped_words.append(words[j])
                     print(words[j])
                     index.append(j)
-            print('')
 
             index.reverse()
             for i in index:
-                grouped_words.append(word[i])
-                words.pop(i)
+                words=np.delete(words, i, 0)
             words=np.delete(words, 0, 0)
             token_id=token_id+1
 
@@ -99,7 +99,7 @@ class standards_and_sentiments:
         # print(df_words)
 
         #glossary to excel
-        with pd.ExcelWriter("companies_glossary/"+self.partofspeech+"vectorised.xlsx") as writer:
+        with pd.ExcelWriter(path+'/'+self.partofspeech+"sentiments.xlsx") as writer:
             df_words.to_excel(writer, sheet_name=self.partofspeech)
         writer.save()
 
