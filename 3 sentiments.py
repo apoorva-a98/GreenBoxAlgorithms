@@ -1,10 +1,5 @@
 #--psudo code--
 #
-# for nouns:
-#     group by reporting requirements
-#     give the same standard and substandard as reporting requirements
-#     store the remaining words in AbstractNouns = []
-#
 # for verbs, adverbs, adjectives, abstractnouns:
 #     group by words with afinn sentiment
 #     give token id
@@ -104,24 +99,11 @@ class standards_and_sentiments:
         writer.save()
 
 
-# ReportingRequirements=standards_and_sentiments("ReportingRequirements")
-# ReportingRequirements.sorting_similar_words(ReportingRequirements.read_partofspeech())
+Verbs=standards_and_sentiments("Verbs")
+Verbs.sorting_similar_words(Verbs.read_partofspeech())
 
-RR=standards_and_sentiments("Reporting Requirements")
-# RR.write_partofspeech(RR.sort_sentiments(RR.read_partofspeech()))
-RR.sort_sentiments(RR.read_partofspeech())
+Adverbs=standards_and_sentiments("Adverbs")
+Adverbs.sorting_similar_words(Adverbs.read_partofspeech())
 
-# Nouns=standards_and_sentiments("Nouns")
-# Nouns.sorting_similar_words(Nouns.read_partofspeech())
-#
-# Verbs=standards_and_sentiments("Verbs")
-# Verbs.sorting_similar_words(Verbs.read_partofspeech())
-#
-# Adverbs=standards_and_sentiments("Adverbs")
-# Adverbs.sorting_similar_words(Adverbs.read_partofspeech())
-#
-# Adjectives=standards_and_sentiments("Adjectives")
-# Adjectives.sorting_similar_words(Adjectives.read_partofspeech())
-#
-# ReportingRequirements=standards_and_sentiments("ReportingRequirements")
-# ReportingRequirements.sorting_similar_words(ReportingRequirements.read_partofspeech())
+Adjectives=standards_and_sentiments("Adjectives")
+Adjectives.sorting_similar_words(Adjectives.read_partofspeech())
