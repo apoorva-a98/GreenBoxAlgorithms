@@ -36,8 +36,7 @@ lemma=3
 pos=3
 sentiment=4
 
-class standards_and_sentiments:
-
+class sentiments:
     def __init__(self, POS):
         self.partofspeech = POS
 
@@ -99,11 +98,11 @@ class standards_and_sentiments:
         writer.save()
 
 
-Verbs=standards_and_sentiments("Verbs")
+Verbs=sentiments("Verbs")
 Verbs.sorting_similar_words(Verbs.read_partofspeech())
 
-Adverbs=standards_and_sentiments("Adverbs")
+Adverbs=sentiments("Adverbs")
 Adverbs.sorting_similar_words(Adverbs.read_partofspeech())
 
-Adjectives=standards_and_sentiments("Adjectives")
+Adjectives=sentiments("Adjectives")
 Adjectives.sorting_similar_words(Adjectives.read_partofspeech())

@@ -59,20 +59,20 @@ class standards_and_sentiments:
         df_words.columns=['frequency','text','lemma','pos','afinn sentiment']
         print(df_words)
 
-        #glossary to excel
-        # with pd.ExcelWriter("companies_glossary/"+self.partofspeech+".xlsx") as writer:
-        #     df_words.to_excel(writer, sheet_name=self.partofspeech)
-        # writer.save()
+        glossary to excel
+        with pd.ExcelWriter("companies_glossary/"+self.partofspeech+".xlsx") as writer:
+            df_words.to_excel(writer, sheet_name=self.partofspeech)
+        writer.save()
 
 
-# Nouns= standards_and_sentiments("Nouns")
-# Nouns.write_partofspeech()
-#
-# Verbs= standards_and_sentiments("Verbs")
-# Verbs.write_partofspeech()
+Nouns= standards_and_sentiments("Nouns")
+Nouns.write_partofspeech()
+
+Verbs= standards_and_sentiments("Verbs")
+Verbs.write_partofspeech()
 
 Adverbs= standards_and_sentiments("Adverbs")
 Adverbs.write_partofspeech()
-#
-# Adjectives= standards_and_sentiments("Adjectives")
-# Adjectives.write_partofspeech()
+
+Adjectives= standards_and_sentiments("Adjectives")
+Adjectives.write_partofspeech()
