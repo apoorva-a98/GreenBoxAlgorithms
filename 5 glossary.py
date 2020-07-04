@@ -82,8 +82,8 @@ class reports:
         return 0
 
     #CHECK FOR DUPLICATES
-    def check_existing(self,word,nouns):
-        for noun in nouns:
+    def check_existing(self,word):
+        for noun in Nouns:
             if word == noun[2]:
                 return 1
         return 0
@@ -98,16 +98,20 @@ class reports:
                 if faulter !=0:
                     doc = nlp(sentence)
                     for token in doc:
-                        if token.pos_ == 'NOUN' and check_existing(token.pos_,Nouns) == 0 and len(token.text)>2 and token.text.isalpha():
+                        if token.pos_ == 'NOUN' and self.check_existing(token.text) == 0 and len(token.text)>2 and token.text.isalpha():
                             new_noun=[]
-                            new_noun.extend(faulter)
+                            new_noun.append(faulter[0])
+                            new_noun.append(faulter[1])
+                            new_noun.append(token.text)
                             Nouns.append(new_noun)
             else:
                 doc = nlp(sentence)
                 for token in doc:
-                    if token.pos_ == 'NOUN' and check_existing(token.pos_,Nouns) == 0 and len(token.text)>2 and token.text.isalpha():
+                    if token.pos_ == 'NOUN' and self.check_existing(token.text) == 0 and len(token.text)>2 and token.text.isalpha():
                         new_noun=[]
-                        new_noun.extend(faulter)
+                        new_noun.append(faulter[0])
+                        new_noun.append(faulter[2])
+                        new_noun.append(token.text)
                         Nouns.append(new_noun)
 
         return Nouns
@@ -118,7 +122,7 @@ class reports:
         df_words = pd.DataFrame(words)
         df_words.columns=['standard','sub-standard','text']
 
-        #glossary to excel
+        # glossary to excel
         with pd.ExcelWriter("companies_glossary/glossary.xlsx") as writer:
             df_words.to_excel(writer, sheet_name='Nouns')
         writer.save()

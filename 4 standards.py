@@ -1,7 +1,7 @@
 #--psudo code--
 #
 # for nouns:
-#     group by reporting requirements
+#     group by glossary
 #     give the same standard and substandard as reporting requirements
 #     store the remaining words in AbstractNouns = []
 
@@ -35,68 +35,57 @@ lemma=3
 pos=3
 sentiment=4
 
-class standards:
+#READ Nouns
+def read_nouns():
+        sheet = []
+        sheet = pd.read_excel(path+'/Nouns.xlsx', usecols='B:F')
+        sheet = sheet.values.tolist()
+        return sheet
 
-    def __init__(self, POS):
-        self.partofspeech = POS
+# READ Glossary
+def read_glossary():
+    sheet=[]
+    sheet= pd.read_excel(path+'/Glossary.xlsx')
+    sheet = sheet.values.tolist()
+    return sheet
 
-    #READ PoS
-    def read_partofspeech(self):
-            sheet = []
-            sheet = pd.read_excel(path+'/'+self.partofspeech+".xlsx", usecols='B:F')
-            #sheet = pd.read_excel(path+'/'+self.partofspeech+'.xlsx', sheet_name="Nouns", usecols='B:I')
-            sheet = sheet.values.tolist()
-            unsorted_words = np.array(sheet)
-            sorted_words=unsorted_words[unsorted_words[:, sentiment].argsort()]
-            sorted_words=sorted_words.tolist()
-            return sorted_words
-    #print(read_partofspeech("Nouns"))
+AbstractNouns=[]
 
-
-    # GROUPING DESCRIPTIVE WORDS
-    def sort_sentiments(self, words):
-        token_id=1
-        grouped_words=[]
-
-        # while(len(words)>0 and words[0][sentiment] is not None):
-        while(len(words)>0 and words[0][sentiment] != 'nan'):
-            words[0].append(token_id)
-            words[0].append('')
-            grouped_words.append(words[0])
-
-            for j in range(1,len(words)):
-                index=[]
-                token = nlp(words[0][lemma]+' '+words[j][lemma])
-                if int(token[0].similarity(token[1])*100) >= 40 and words[j][sentiment]=='nan':
-                    # print(words[0][lemma], words[j][lemma], words[j][sentiment], token[0].similarity(token[1])*100)
-                    words[j][sentiment]=words[0][sentiment]
-                    words[j].append(token_id)
-                    words[j].append(token[0].similarity(token[1])*100)
-                    grouped_words.append(words[j])
-                    print(words[j])
-                    index.append(j)
-
-            index.reverse()
-            for i in index:
-                words=np.delete(words, i, 0)
-            words=np.delete(words, 0, 0)
-            token_id=token_id+1
-
-        return grouped_words
+# GROUPING DESCRIPTIVE WORDS
+def sort_standards(Nouns, Glossary):
+    while(len(Nouns)>0):
+        for word in Glossary:
+            flag = 0
+            token = nlp(Nouns[0][text]+' '+word[2])
+            if int(token[0].similarity(token[1])*100) >= 40:
+                new_noun=[]
+                new_noun.append(word[0])
+                new_noun.append(word[1])
+                new_noun.append(Nouns[0][text])
+                Glossary.append(new_noun)
+                break
+            else:
+                AbstractNouns.append(Noun[0])
+                break
+        Nouns.pop(0)
+    return Glossary
 
 
-    #WRITE PoS
-    def write_partofspeech(self, words):
-        words = np.array(words)
-        df_words = pd.DataFrame(words)
-        df_words.columns=['frequency','text','lemma','pos','afinn sentiment','token_id','similarity']
-        # print(df_words)
+#CREATE GLORRARY
+def create_glossary(glossary,nouns):
+    df_words = pd.DataFrame(glossary)
+    df_words.columns=['standard','sub-standard','text']
 
-        #glossary to excel
-        with pd.ExcelWriter(path+'/'+self.partofspeech+"sentiments.xlsx") as writer:
-            df_words.to_excel(writer, sheet_name=self.partofspeech)
-        writer.save()
+    df_nouns = pd.DataFrame(nouns)
+    df_nouns.columns=['frequency','text','lemma','pos','afinn sentiment']
 
+    # glossary to excel
+    with pd.ExcelWriter(path+"/FinalGlossary.xlsx") as writer:
+        df_words.to_excel(writer)
+    writer.save()
 
-Nouns=standards("Nouns")
-Nouns.sorting_similar_words(Nouns.read_partofspeech())
+    with pd.ExcelWriter(path+"/AbstractNouns.xlsx") as writer:
+        df_nouns.to_excel(writer)
+    writer.save()
+
+create_glossary(sort_standards(read_nouns(),def read_glossary()),AbstractNouns)
