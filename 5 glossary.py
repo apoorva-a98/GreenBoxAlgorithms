@@ -71,7 +71,6 @@ class reports:
         if buff is not None:
             sentences.append(buff)
             buff=''
-        print(sentences)
         return sentences
 
     #SEARCHING WITHIN THE FAULTERS
@@ -87,7 +86,7 @@ class reports:
             if self.search_within(sentence,Verbs) == 1 or self.search_within(sentence,Adverbs) == 1 or self.search_within(sentence,Adjectives) == 1:
                 doc = nlp(sentence)
                 for token in doc:
-                    if (token.pos_ == 'NOUN' or token.pos_ == 'PROPN') and token.text not in Nouns:
+                    if token.pos_ == 'NOUN' and token.text not in Nouns and len(token.text)>2 and token.text.isalpha():
                         Nouns.append(token.text)
         return Nouns
     #print(find_faulters(tokenify_glossary(read_file())))
@@ -98,7 +97,7 @@ class reports:
         df_words.columns=['text']
 
         #glossary to excel
-        with pd.ExcelWriter("companies_glossary/refinedglossary.xlsx") as writer:
+        with pd.ExcelWriter("companies_glossary/glossary.xlsx") as writer:
             df_words.to_excel(writer, sheet_name='Nouns')
         writer.save()
         return df_words
@@ -107,23 +106,23 @@ class reports:
 HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
 print(HUL.create_glossary(HUL.find_faulters(HUL.tokenify_glossary(HUL.read_file()))))
 
-# Colgate = reports("Colgate", "Colgate 2018-2019_Annual Report.txt")
-# print(Colgate.create_glossary(Colgate.find_faulters(Colgate.tokenify_glossary(Colgate.read_file()))))
-#
-# ITC = reports("ITC", "ITC 2018-2019 Annual Report.txt")
-# print(ITC.create_glossary(ITC.find_faulters(ITC.tokenify_glossary(ITC.read_file()))))
-#
-# Dabur = reports("Dabur", "Dabur 2018-19_Annual Report.txt")
-# print(Dabur.create_glossary(Dabur.find_faulters(Dabur.tokenify_glossary(Dabur.read_file()))))
-#
-# Godrej = reports("Godrej", "Godrej 2018-2019_Annual Report.txt")
-# print(Godrej.create_glossary(Godrej.find_faulters(Godrej.tokenify_glossary(Godrej.read_file()))))
-#
-# Marico = reports("Marico", "Marico 2018-2019_Annual Report.txt")
-# print(Marico.create_glossary(Marico.find_faulters(Marico.tokenify_glossary(Marico.read_file()))))
-#
-# Nestle = reports("Nestle", "Nestle 2017-2018_Annual Report.txt")
-# print(Nestle.create_glossary(Nestle.find_faulters(Nestle.tokenify_glossary(Nestle.read_file()))))
-#
-# PnG = reports("PnG", "P&G 2018-2019_Annual Report.txt")
-# print(PnG.create_glossary(PnG.find_faulters(PnG.tokenify_glossary(PnG.read_file()))))
+Colgate = reports("Colgate", "Colgate 2018-2019_Annual Report.txt")
+print(Colgate.create_glossary(Colgate.find_faulters(Colgate.tokenify_glossary(Colgate.read_file()))))
+
+ITC = reports("ITC", "ITC 2018-2019 Annual Report.txt")
+print(ITC.create_glossary(ITC.find_faulters(ITC.tokenify_glossary(ITC.read_file()))))
+
+Dabur = reports("Dabur", "Dabur 2018-19_Annual Report.txt")
+print(Dabur.create_glossary(Dabur.find_faulters(Dabur.tokenify_glossary(Dabur.read_file()))))
+
+Godrej = reports("Godrej", "Godrej 2018-2019_Annual Report.txt")
+print(Godrej.create_glossary(Godrej.find_faulters(Godrej.tokenify_glossary(Godrej.read_file()))))
+
+Marico = reports("Marico", "Marico 2018-2019_Annual Report.txt")
+print(Marico.create_glossary(Marico.find_faulters(Marico.tokenify_glossary(Marico.read_file()))))
+
+Nestle = reports("Nestle", "Nestle 2017-2018_Annual Report.txt")
+print(Nestle.create_glossary(Nestle.find_faulters(Nestle.tokenify_glossary(Nestle.read_file()))))
+
+PnG = reports("PnG", "P&G 2018-2019_Annual Report.txt")
+print(PnG.create_glossary(PnG.find_faulters(PnG.tokenify_glossary(PnG.read_file()))))

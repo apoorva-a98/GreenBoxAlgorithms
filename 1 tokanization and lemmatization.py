@@ -27,17 +27,13 @@ for i in range(1,8):
     items_mcdonals[i-1] = [item.lower() for sublist in items_mcdonals[i-1] for item in sublist]
 #print(items_mcdonals[2])
 
-# #READING COMPANY REPORTS
-# f_HUL=open("HUL 2018-2019_Annual Report.txt", "r")
-# items_HUL=f_HUL.read()
-
 #CLEANING DATA
 f_stop_words=open("StopWords_GenericLong.txt", "r")
 stop_words=[str(i[0:-1]) for i in f_stop_words]
 avoid=['@','#','$','%','^','&','*','(',')','_','=','+','[',']','|','\n','\t','<','>','/']
 
 #ABBREVIATIONS TO RETAIN
-abbreviations=['co2','ch4','n2o','hfcs', 'pfcs', 'sf6', 'nf3', 'pop', 'voc', 'hap', 'pm', 'gwp', 'cfc11', 'ods', 'nox', 'so', 'so', 'mwh', 'kw', 'ir', 'odr', 'ldr', 'ar', 'ilo', 'oecd', 'who', 'lgbt', 'csr', "iccs", 'gst', 'ebitda','ifrs', 'iasb', 'ipsas', 'ifac', 'evgd', 'pl', 'eca']
+abbreviations=['co2','ch4','n2o','hfcs', 'pfcs', 'sf6', 'nf3', 'pop', 'voc', 'hap', 'pm', 'gwp', 'cfc11', 'ods', 'nox', 'so', 'mwh', 'kw', 'ir', 'odr', 'ldr', 'ar', 'ilo', 'oecd', 'who', 'lgbt', 'csr', "iccs", 'gst', 'ebitda','ifrs', 'iasb', 'ipsas', 'ifac', 'evgd', 'pl', 'eca']
 
 class reports:
     def __init__(self, name, path):
@@ -226,32 +222,106 @@ class reports:
     #print(sort_glossary(divide_glossary(tokenify_glossary(read_file()))))
 
 
-HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
-print(HUL.sort_glossary(HUL.divide_glossary(HUL.tokenify_glossary(HUL.read_file()))))
-
-Colgate = reports("Colgate", "Colgate 2018-2019_Annual Report.txt")
-print(Colgate.sort_glossary(Colgate.divide_glossary(Colgate.tokenify_glossary(Colgate.read_file()))))
-
-ITC = reports("ITC", "ITC 2018-2019 Annual Report.txt")
-print(ITC.sort_glossary(ITC.divide_glossary(ITC.tokenify_glossary(ITC.read_file()))))
-
-Dabur = reports("Dabur", "Dabur 2018-19_Annual Report.txt")
-print(Dabur.sort_glossary(Dabur.divide_glossary(Dabur.tokenify_glossary(Dabur.read_file()))))
-
-Godrej = reports("Godrej", "Godrej 2018-2019_Annual Report.txt")
-print(Godrej.sort_glossary(Godrej.divide_glossary(Godrej.tokenify_glossary(Godrej.read_file()))))
-
-Marico = reports("Marico", "Marico 2018-2019_Annual Report.txt")
-print(Marico.sort_glossary(Marico.divide_glossary(Marico.tokenify_glossary(Marico.read_file()))))
-
-Nestle = reports("Nestle", "Nestle 2017-2018_Annual Report.txt")
-print(Nestle.sort_glossary(Nestle.divide_glossary(Nestle.tokenify_glossary(Nestle.read_file()))))
-
-PnG = reports("PnG", "P&G 2018-2019_Annual Report.txt")
-print(PnG.sort_glossary(PnG.divide_glossary(PnG.tokenify_glossary(PnG.read_file()))))
+# HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
+# print(HUL.sort_glossary(HUL.divide_glossary(HUL.tokenify_glossary(HUL.read_file()))))
 #
-# RR = reports("Reporting Requirements", "Reporting Requirements.txt")
-# print(RR.sort_glossary(RR.divide_glossary(RR.tokenify_glossary(RR.read_file()))))
+# Colgate = reports("Colgate", "Colgate 2018-2019_Annual Report.txt")
+# print(Colgate.sort_glossary(Colgate.divide_glossary(Colgate.tokenify_glossary(Colgate.read_file()))))
 #
-# Gl = reports("Glossary", "Glossary.txt")
-# print(Gl.sort_glossary(Gl.divide_glossary(Gl.tokenify_glossary(Gl.read_file()))))
+# ITC = reports("ITC", "ITC 2018-2019 Annual Report.txt")
+# print(ITC.sort_glossary(ITC.divide_glossary(ITC.tokenify_glossary(ITC.read_file()))))
+#
+# Dabur = reports("Dabur", "Dabur 2018-19_Annual Report.txt")
+# print(Dabur.sort_glossary(Dabur.divide_glossary(Dabur.tokenify_glossary(Dabur.read_file()))))
+#
+# Godrej = reports("Godrej", "Godrej 2018-2019_Annual Report.txt")
+# print(Godrej.sort_glossary(Godrej.divide_glossary(Godrej.tokenify_glossary(Godrej.read_file()))))
+#
+# Marico = reports("Marico", "Marico 2018-2019_Annual Report.txt")
+# print(Marico.sort_glossary(Marico.divide_glossary(Marico.tokenify_glossary(Marico.read_file()))))
+#
+# Nestle = reports("Nestle", "Nestle 2017-2018_Annual Report.txt")
+# print(Nestle.sort_glossary(Nestle.divide_glossary(Nestle.tokenify_glossary(Nestle.read_file()))))
+#
+# PnG = reports("PnG", "P&G 2018-2019_Annual Report.txt")
+# print(PnG.sort_glossary(PnG.divide_glossary(PnG.tokenify_glossary(PnG.read_file()))))
+
+
+class glossary:
+    def __init__(self, glossary, path):
+        self.glossary = glossary
+        self.filepath = path
+
+    # READING COMPANY REPORTS
+    def read_sheet(self):
+        sheet=[]
+        sheet= pd.read_excel(self.filepath)
+        sheet = sheet.values.tolist()
+        sheet = [item.lower() for sublist in sheet for item in sublist]
+        print(sheet)
+        return sheet
+
+    #GLORRARY SRANDARDS
+    def divide_glossary(self,sheet):
+        glossary_nouns = []
+        glossary_verbs = []
+        glossary_adverbs = []
+        glossary_adjectives = []
+        POS=[]
+
+        for item in sheet:
+            doc = nlp(item[2])
+            for token in doc:
+                word=[]
+                word.append(item[0])
+                word.append(item[1])
+                word.append(token.text)
+                word.append(token.lemma_)
+                word.append(token.pos_)
+
+                #parts of speech segregation
+                if token.pos_ == 'NOUN' or token.pos_ == 'PROPN':
+                    glossary_nouns.append(word)
+                elif token.pos_ == 'VERB':
+                    glossary_verbs.append(word)
+                elif token.pos_ == 'ADV' or token.pos_ == 'ADP':
+                    glossary_adverbs.append(word)
+                elif token.pos_ == 'ADJ':
+                    glossary_adjectives.append(word)
+
+            # 3D List
+            POS.append(glossary_nouns)
+            POS.append(glossary_verbs)
+            POS.append(glossary_adverbs)
+            POS.append(glossary_adjectives)
+
+        return POS
+
+    #CREATE GLORRARY
+    def create_glossary(self,POS):
+        nouns = POS[0]
+        df_nouns = pd.DataFrame(nouns)
+        df_nouns.columns=['standard','sub-standard','text','lemma','pos']
+
+        verbs = POS[0]
+        df_verbs = pd.DataFrame(verbs)
+        df_verbs.columns=['standard','sub-standard','text','lemma','pos']
+
+        adverbs = POS[0]
+        df_aderbs = pd.DataFrame(adverbs)
+        df_adverbs.columns=['standard','sub-standard','text','lemma','pos']
+
+        adjectives = POS[0]
+        df_adjectives = pd.DataFrame(adjectives)
+        df_adjectives.columns=['standard','sub-standard','text','lemma','pos']
+
+        #glossary to excel
+        with pd.ExcelWriter("companies_glossary/faulteredglossary.xlsx") as writer:
+            df_nouns.to_excel(writer, sheet_name='Nouns')
+            df_verbs.to_excel(writer, sheet_name='Verbs')
+            df_adverbs.to_excel(writer, sheet_name='Adverbs')
+            df_adjective.to_excel(writer, sheet_name='Adjectives')
+        writer.save()
+
+Gl = glossary("Glossary", "consolidatedkeywords.xlsx")
+print(Gl.create_glossary(Gl.divide_glossary(Gl.read_sheet())))
