@@ -257,7 +257,7 @@ class glossary:
         sheet=[]
         sheet= pd.read_excel(self.filepath)
         sheet = sheet.values.tolist()
-        sheet = [item.lower() for sublist in sheet for item in sublist]
+        # sheet = [item.lower() for sublist in sheet for item in sublist]
         print(sheet)
         return sheet
 
@@ -303,15 +303,15 @@ class glossary:
         df_nouns = pd.DataFrame(nouns)
         df_nouns.columns=['standard','sub-standard','text','lemma','pos']
 
-        verbs = POS[0]
+        verbs = POS[1]
         df_verbs = pd.DataFrame(verbs)
         df_verbs.columns=['standard','sub-standard','text','lemma','pos']
 
-        adverbs = POS[0]
-        df_aderbs = pd.DataFrame(adverbs)
+        adverbs = POS[2]
+        df_adverbs = pd.DataFrame(adverbs)
         df_adverbs.columns=['standard','sub-standard','text','lemma','pos']
 
-        adjectives = POS[0]
+        adjectives = POS[3]
         df_adjectives = pd.DataFrame(adjectives)
         df_adjectives.columns=['standard','sub-standard','text','lemma','pos']
 
@@ -320,7 +320,7 @@ class glossary:
             df_nouns.to_excel(writer, sheet_name='Nouns')
             df_verbs.to_excel(writer, sheet_name='Verbs')
             df_adverbs.to_excel(writer, sheet_name='Adverbs')
-            df_adjective.to_excel(writer, sheet_name='Adjectives')
+            df_adjectives.to_excel(writer, sheet_name='Adjectives')
         writer.save()
 
 Gl = glossary("Glossary", "consolidatedkeywords.xlsx")
