@@ -30,7 +30,7 @@ def read_sheet(pos):
     sheet=[]
     sheet= pd.read_excel(filepath, sheet_name=pos)
     sheet = sheet.values.tolist()
-    sheet = [item.lower() for sublist in sheet for item in sublist]
+    # sheet = [item.lower() for sublist in sheet for item in sublist]
     return sheet
 
 Nouns = read_sheet("Nouns")
@@ -77,24 +77,46 @@ class reports:
     def search_within(self,sentence,pos):
         sentence=sentence.split(' ')
         for word in pos:
-            if word in sentence:
+            if word[2] in sentence:
+                return word
+        return 0
+
+    #CHECK FOR DUPLICATES
+    def check_existing(self,word,nouns):
+        for noun in nouns:
+            if word == noun[2]:
                 return 1
+        return 0
+
 
     #GLORRARY SRANDARDS
     def find_faulters(self,sentences):
         for sentence in sentences:
-            if self.search_within(sentence,Verbs) == 1 or self.search_within(sentence,Adverbs) == 1 or self.search_within(sentence,Adjectives) == 1:
+            faulter=self.search_within(sentence,Verbs)
+            if faulter == 0:
+                faulter = self.search_within(sentence,Adjectives)
+                if faulter !=0:
+                    doc = nlp(sentence)
+                    for token in doc:
+                        if token.pos_ == 'NOUN' and check_existing(token.pos_,Nouns) == 0 and len(token.text)>2 and token.text.isalpha():
+                            new_noun=[]
+                            new_noun.extend(faulter)
+                            Nouns.append(new_noun)
+            else:
                 doc = nlp(sentence)
                 for token in doc:
-                    if token.pos_ == 'NOUN' and token.text not in Nouns and len(token.text)>2 and token.text.isalpha():
-                        Nouns.append(token.text)
+                    if token.pos_ == 'NOUN' and check_existing(token.pos_,Nouns) == 0 and len(token.text)>2 and token.text.isalpha():
+                        new_noun=[]
+                        new_noun.extend(faulter)
+                        Nouns.append(new_noun)
+
         return Nouns
     #print(find_faulters(tokenify_glossary(read_file())))
 
     #CREATE GLORRARY
     def create_glossary(self, words):
         df_words = pd.DataFrame(words)
-        df_words.columns=['text']
+        df_words.columns=['standard','sub-standard','text']
 
         #glossary to excel
         with pd.ExcelWriter("companies_glossary/glossary.xlsx") as writer:
