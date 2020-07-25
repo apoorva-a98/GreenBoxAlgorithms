@@ -67,7 +67,7 @@ class sentiments:
             for j in range(1,len(words)):
                 index=[]
                 token = nlp(words[0][lemma]+' '+words[j][lemma])
-                if int(token[0].similarity(token[1])*100) >= 40 and words[j][sentiment]=='nan':
+                if int(token[0].similarity(token[1])*100) >= 60 and words[j][sentiment]=='nan':
                     # print(words[0][lemma], words[j][lemma], words[j][sentiment], token[0].similarity(token[1])*100)
                     words[j][sentiment]=words[0][sentiment]
                     words[j].append(token_id)
