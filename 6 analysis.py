@@ -2,43 +2,26 @@
 
 import xlwt
 from xlwt import Workbook
+import spacy
 import operator
 import numpy as np
-import math
 import pandas as pd
 from pandas import DataFrame
-import stanza
-stanza.download('en' processors='tokenize,mwt,pos,lemma,depparse')
-nlp = stanza.Pipeline('en')
-doc = nlp("Barack Obama was born in Hawaii.  He was elected president in 2008.")
-doc.sentences[0].print_dependencies()
+import json
 
-
-# psudo code
-
-I need to read reports.
-1. fetch every sentence one by one.
-2. find heads of each word.
-3. if a child has a sentiment add to the head. repeat untill the root gets all the sentiments.
-4. check for glossary words in subject object niuns and give sentiment to both subject and object.
-5. if the subject/object of the next sentence is a pronoun, replace the pronoun with the last occured noun.
-6. group noun phrases and and prepositional phrases for the polarity of the sentiment.
-
-start with hul copy file.
-
+# INITIALIZING SPACY AND ITS 'en' MODEL
+nlp = spacy.load("en_core_web_sm")
 
 #CLEANING DATA
 f_stop_words=open("StopWords_GenericLong.txt", "r")
 stop_words=[str(i[0:-1]) for i in f_stop_words]
 avoid=['@','#','$','%','^','&','*','(',')','_','=','+','[',']','|','\n','\t','<','>','/']
 
-#ABBREVIATIONS TO RETAIN
-abbreviations=['co2','ch4','n2o','hfcs', 'pfcs', 'sf6', 'nf3', 'pop', 'voc', 'hap', 'pm', 'gwp', 'cfc11', 'ods', 'nox', 'so', 'mwh', 'kw', 'ir', 'odr', 'ldr', 'ar', 'ilo', 'oecd', 'who', 'lgbt', 'csr', "iccs", 'gst', 'ebitda','ifrs', 'iasb', 'ipsas', 'ifac', 'evgd', 'pl', 'eca']
-
 class reports:
     def __init__(self, name, path):
         self.company = name
         self.filepath = path
+        subject=0
 
 
     # READING COMPANY REPORTS
@@ -67,73 +50,105 @@ class reports:
         return sentences
     #print(tokenify_glossary(read_file()))
 
-    #IDENTIFY STANDARD
 
-    #GIVE SENTIMENT
-
-
-    #SINGLE SENTENCE READING
-    def read_sentence(self,sentence):
-        #psudo code
-        array for word, index, head and SENTIMENTS
-        identify the index of root.
-            array len(sentence) -> how to call this?
-            w.append(word[0])
-            w.append(word.index)
-            w.append(word.head)
-            w.append(find_sentiment(word[0]))
-            x.append(w)
-            while root has child:
-                if word has no child:
-                    if word has a sentiment:
-                        word.head.sentiment=word.head.sentiment +word.sentiment
-                        x.pop(index(word))
-
-        sentiment=[]*len(sentence)
-        doc = nlp(sentence)
-
-        for word in sentence:
+    #READ SENTENCES
+    def read_sentences(self,sentences):
+        for sentence is sentences:
+            sentence.split("but","yet","so")
+            for section is sentence:
+                doc=nlp(section)
+                root = [token for token in doc if token.head == token][0]
+                root=[root]
+                tree=[]
+                tree=create_tree(root,doc,tree)
 
 
-    #print(read_sentence(tokenify_glossary(read_file())))
 
-    #STANDARDS AND SENTIMENTS
-    def read_document(self,sentences):
-        for sentence in sentences:
-            #if sentence has a standard:
-                self.read_sentence(sentence)
+    #LIST-TREE
+    def create_tree(self,temp_head,doc,TREE):
+        doc = self.break_sentence(doc)
+        doc = self.merge_compounds(doc)
+        doc = self.combine_commas(doc)
+        for sub_head in temp_head:
+            self.track_subjects(sub_head)
+            if not self.ignore_fillers(sub_head):
+                BRANCH =[]
+                BRANCH.append(sub_head.i)
+                BRANCH.append(sub_head.dep_)
+                BRANCH.append(sub_head.text)
+                BRANCH.append(sub_head.head.i)
+                TREE.append(BRANCH)
+            sub_tree=[child for child in sub_head.children]
+            if not sub_tree:
+                continue
+            else:
+                self.create_tree(sub_tree,doc,TREE,)
+        return TREE
 
+    #Merge dep
+    def merge_compounds(self,doc):
+        len=0
+        index_c=0
+        index_h=0
+        for token in doc:
+            if token.dep_=="compound" or (token.dep_=="conj" and (token.text!="and" or token.text!="or" or token.text!="nor")):
+                index_c=token.i
+                index_h=token.head.i
+                with doc.retokenize() as retokenizer:
+                    if index_h>index_c:
+                        retokenizer.merge(doc[index_c:index_h+1], attrs={"dep":token.head.dep_})
+                    elif index_c>index_h:
+                        retokenizer.merge(doc[index_h:index_c+1], attrs={"dep":token.head.dep_})
+                self.merge_compounds(doc)
+            else:
+                len=len+1
+                if len >= doc[-1].i:
+                    return doc
 
-    #RETAINING ABBREVIATIONS
-    def is_abbreviation(self,word):
-        if word in abbreviations:
+    #Combine descriptive
+    def combine_commas(self,doc):
+        len=0
+        index_c=0
+        index_h=0
+        for token in doc:
+            if (token.pos_=="ADV" or token.pos_=="ADJ" or token.pos_=="NOUN" or token.pos_=="VERB" or token.pos_=="PNON")and doc[token.i+1].text=="," and doc[token.i+2].pos_==token.pos_:
+                index_c=token.i
+                index_h=token.i+2
+                with doc.retokenize() as retokenizer:
+                    retokenizer.merge(doc[index_c:index_h+1], attrs={"dep":token.head.dep_})
+                self.combine_commas(doc)
+            else:
+                len=len+1
+                if len >= doc[-1].i:
+                    return doc
+
+    #Address sentence breaks
+    def break_sentence(self,doc):
+        for token in doc:
+            if (token.dep_=="conj" and (token.text!="and" or token.text!="or" or token.text!="nor")) :
+                token.text=","
+        return doc
+
+    #Track subjects and pronouns
+    def track_subjects(self,sub_head):
+        if sub_head.dep_=="nsubj" or sub_head.dep_=="csubj":
+            subject=sub_head.text
+        elif sub_head.dep_=="PRON" and (sub_head.text=="It" or sub_head.text=="it"):
+            sub_head.text=subject
+
+    #Ignore dep
+    def ignore_fillers(self,sub_head):
+        if sub_head.dep_=="aux" or sub_head.pos_=="DET" or sub_head.pos_=="PUNCT" or sub_head.dep_=="preconj" or sub_head.dep_=="prep":
             return 1
         else:
             return 0
 
-    #REDUCE DUPLICATE WORDS AND FREQUENCY
-    def reduce_glossary(self,sorted_words):
-        glossary=[]
-        # token_id=''
-        while(len(sorted_words)>0):
-            abb=0
-            count=1
-            word_frequency=[]
-            while(len(sorted_words)>1 and sorted_words[0][1]==sorted_words[1][1]):
-                count=count+1
-                sorted_words=np.delete(sorted_words, 1, 0)
-            if  self.is_abbreviation(sorted_words[0][0]) == 1:
-                word_frequency.append(count)
-                word_frequency.extend(sorted_words[0])
-                glossary.append(word_frequency)
-                abb=1
-            if sorted_words[0][0] not in stop_words and len(sorted_words[0][0])>2 and sorted_words[0][0].isalpha() and abb==0:
-                word_frequency.append(count)
-                word_frequency.extend(sorted_words[0])
-                # word_frequency.append(token_id)
-                glossary.append(word_frequency)
-            sorted_words=np.delete(sorted_words, 0, 0)
-        return glossary
+
+
+
+
+
+
 
 
     #CREATE GLORRARY
@@ -181,7 +196,6 @@ class reports:
 
         return sorted_POS
     #print(sort_glossary(divide_glossary(tokenify_glossary(read_file()))))
-
 
 # HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
 # print(HUL.sort_glossary(HUL.divide_glossary(HUL.tokenify_glossary(HUL.read_file()))))

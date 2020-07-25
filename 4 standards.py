@@ -38,8 +38,9 @@ sentiment=4
 #READ Nouns
 def read_nouns():
         sheet = []
-        sheet = pd.read_excel(path+'/Nouns.xlsx', usecols='B:F')
+        sheet = pd.read_excel(path+'/Nouns.xlsx')
         sheet = sheet.values.tolist()
+        sheet = [item for sublist in sheet for item in sublist]
         return sheet
 
 # READ Glossary
@@ -68,6 +69,19 @@ def sort_standards(Nouns, Glossary):
                 AbstractNouns.append(Noun[0])
                 break
         Nouns.pop(0)
+    return Glossary
+
+def sort_standards(Nouns, Glossary):
+    for word in Glossary:
+        for noun in Nouns:
+            token = nlp(noun+' '+word[2])
+            if int(token[0].similarity(token[1])*100) >= 40:
+                new_noun=[]
+                new_noun.append(word[0])
+                new_noun.append(word[1])
+                new_noun.append(noun)
+                Glossary.append(new_noun)
+                break
     return Glossary
 
 

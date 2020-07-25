@@ -1,4 +1,4 @@
-#--psudo code--
+ #--psudo code--
 #
 # for glossary:
 #     open glossary.xls
