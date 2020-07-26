@@ -12,10 +12,33 @@ import json
 # INITIALIZING SPACY AND ITS 'en' MODEL
 nlp = spacy.load("en_core_web_sm")
 
+# OPENING JSON SENTIMENT DICTIONARY
+with open('afinn-165.json') as f:
+  items_afinn = json.load(f)
+
 #CLEANING DATA
 f_stop_words=open("StopWords_GenericLong.txt", "r")
 stop_words=[str(i[0:-1]) for i in f_stop_words]
 avoid=['@','#','$','%','^','&','*','(',')','_','=','+','[',']','|','\n','\t','<','>','/']
+
+# READING GLOSSARY EXCEL
+def read_standards():
+    sheet= pd.read_excel("Standards.xlsx")
+    return sheet
+
+# READING SENTIMENTS EXCEL
+def read_sentiments():
+    sheet= pd.read_excel("Sentiments.xlsx")
+    return sheet
+
+standards_data=read_standards()
+sentiments_data=read_sentiments()
+df_standards = pd.DataFrame(standards_data)
+df_sentiments = pd.DataFrame(sentiments_data, columns=['keyword', 'sentiment'])
+
+
+create dataframe for materiality and keep count
+
 
 class reports:
     def __init__(self, name, path):
@@ -53,14 +76,18 @@ class reports:
 
     #READ SENTENCES
     def read_sentences(self,sentences):
-        for sentence is sentences:
+        for sentence in sentences:
             sentence.split("but","yet","so")
-            for section is sentence:
+            for section in sentence:
                 doc=nlp(section)
                 root = [token for token in doc if token.head == token][0]
                 root=[root]
                 tree=[]
+                stakeholders = 0
                 tree=create_tree(root,doc,tree)
+                materiality = select_standards(doc)
+                sentiment = calculate_sentiments(tree)
+
 
 
 
@@ -135,6 +162,8 @@ class reports:
             subject=sub_head.text
         elif sub_head.dep_=="PRON" and (sub_head.text=="It" or sub_head.text=="it"):
             sub_head.text=subject
+        elif sub_head.dep_=="PRON" and (sub_head.text!="It" or sub_head.text!="it"):
+            stakeholders=stakeholders+1
 
     #Ignore dep
     def ignore_fillers(self,sub_head):
@@ -144,6 +173,34 @@ class reports:
             return 0
 
 
+    # INDENTIFY MATERIALITY
+    def select_standards(self,doc):
+        materiality=[]
+        for token in doc:
+            found=df_standards.loc[df_standards['sub-standard'].head(1) == token].values.tolist()
+            if found:
+                materiality.append([found[0][0], found[0][1]])
+            elif found=df_standards.loc[df_standards['text'].head(1) == token].values.tolist():
+                materiality.append(found[0][0], found[0][1]])
+        return materiality
+
+
+    #CALCULATE SENTIMENTS
+    def calculate_sentiments(self,TREE):
+        count_descriptive_words=0
+        sentiment=0
+        TREE=TREE.inverse()
+        for items in TREE:
+            item_sentiment=0
+            items.split("and",",")
+                for item in items:
+                    found=df_sentiments.loc[df_sentiments['keyword'].head(1) == item].values.tolist()
+                    if found:
+                        item_sentiment=item_sentiment+1
+                if not item_sentiment:
+                    item_sentiment=1
+            sentiment=item_sentiment=len(items)*sentiment
+        return sentiments
 
 
 
@@ -152,49 +209,49 @@ class reports:
 
 
     #CREATE GLORRARY
-    def sort_glossary(self,POS):
-        sorted_POS=[]
-
-        unsorted_nouns = np.array(POS[0])
-        sorted_nouns=unsorted_nouns[unsorted_nouns[:, 1].argsort()]
-        sorted_nouns=self.reduce_glossary(sorted_nouns)
-        df_nouns = pd.DataFrame(sorted_nouns)
-        # df_nouns.columns=['frequency','text','lemma','pos','eng-tag','dependency','afinn sentiment','mcdonals sentiment','token id']
-        df_nouns.columns=['frequency','text','lemma','pos','afinn sentiment']
-
-        unsorted_verbs = np.array(POS[1])
-        sorted_verbs=unsorted_verbs[unsorted_verbs[:, 1].argsort()]
-        sorted_verbs=self.reduce_glossary(sorted_verbs)
-        df_verbs = pd.DataFrame(sorted_verbs)
-        df_verbs.columns=['frequency','text','lemma','pos','afinn sentiment']
-
-        unsorted_adverbs = np.array(POS[2])
-        sorted_adverbs=unsorted_adverbs[unsorted_adverbs[:, 1].argsort()]
-        sorted_adverbs=self.reduce_glossary(sorted_adverbs)
-        df_adverbs = pd.DataFrame(sorted_adverbs)
-        df_adverbs.columns=['frequency','text','lemma','pos','afinn sentiment']
-
-        unsorted_adjectives = np.array(POS[3])
-        sorted_adjectives=unsorted_adjectives[unsorted_adjectives[:, 1].argsort()]
-        # sorted_adjectives=self.group_synoynms(self.reduce_glossary(sorted_adjectives))
-        sorted_adjectives=self.reduce_glossary(sorted_adjectives)
-        df_adjective = pd.DataFrame(sorted_adjectives)
-        df_adjective.columns=['frequency','text','lemma','pos','afinn sentiment']
-
-        sorted_POS.append(sorted_nouns)
-        sorted_POS.append(sorted_verbs)
-        sorted_POS.append(sorted_adverbs)
-        sorted_POS.append(sorted_adjectives)
+    # def sort_glossary(self,POS):
+        # sorted_POS=[]
+        #
+        # unsorted_nouns = np.array(POS[0])
+        # sorted_nouns=unsorted_nouns[unsorted_nouns[:, 1].argsort()]
+        # sorted_nouns=self.reduce_glossary(sorted_nouns)
+        # df_nouns = pd.DataFrame(sorted_nouns)
+        # # df_nouns.columns=['frequency','text','lemma','pos','eng-tag','dependency','afinn sentiment','mcdonals sentiment','token id']
+        # df_nouns.columns=['frequency','text','lemma','pos','afinn sentiment']
+        #
+        # unsorted_verbs = np.array(POS[1])
+        # sorted_verbs=unsorted_verbs[unsorted_verbs[:, 1].argsort()]
+        # sorted_verbs=self.reduce_glossary(sorted_verbs)
+        # df_verbs = pd.DataFrame(sorted_verbs)
+        # df_verbs.columns=['frequency','text','lemma','pos','afinn sentiment']
+        #
+        # unsorted_adverbs = np.array(POS[2])
+        # sorted_adverbs=unsorted_adverbs[unsorted_adverbs[:, 1].argsort()]
+        # sorted_adverbs=self.reduce_glossary(sorted_adverbs)
+        # df_adverbs = pd.DataFrame(sorted_adverbs)
+        # df_adverbs.columns=['frequency','text','lemma','pos','afinn sentiment']
+        #
+        # unsorted_adjectives = np.array(POS[3])
+        # sorted_adjectives=unsorted_adjectives[unsorted_adjectives[:, 1].argsort()]
+        # # sorted_adjectives=self.group_synoynms(self.reduce_glossary(sorted_adjectives))
+        # sorted_adjectives=self.reduce_glossary(sorted_adjectives)
+        # df_adjective = pd.DataFrame(sorted_adjectives)
+        # df_adjective.columns=['frequency','text','lemma','pos','afinn sentiment']
+        #
+        # sorted_POS.append(sorted_nouns)
+        # sorted_POS.append(sorted_verbs)
+        # sorted_POS.append(sorted_adverbs)
+        # sorted_POS.append(sorted_adjectives)
 
         #glossary to excel
-        with pd.ExcelWriter("companies_glossary/"+self.company+".xlsx") as writer:
-            df_nouns.to_excel(writer, sheet_name='Nouns')
-            df_verbs.to_excel(writer, sheet_name='Verbs')
-            df_adverbs.to_excel(writer, sheet_name='Adverbs')
-            df_adjective.to_excel(writer, sheet_name='Adjectives')
-        writer.save()
-
-        return sorted_POS
+        # with pd.ExcelWriter("companies_glossary/"+self.company+".xlsx") as writer:
+        #     df_nouns.to_excel(writer, sheet_name='Nouns')
+        #     df_verbs.to_excel(writer, sheet_name='Verbs')
+        #     df_adverbs.to_excel(writer, sheet_name='Adverbs')
+        #     df_adjective.to_excel(writer, sheet_name='Adjectives')
+        # writer.save()
+        #
+        # return sorted_POS
     #print(sort_glossary(divide_glossary(tokenify_glossary(read_file()))))
 
 # HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
