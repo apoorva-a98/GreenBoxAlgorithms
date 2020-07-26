@@ -17,8 +17,8 @@ with open('afinn-165.json') as f:
   items_afinn = json.load(f)
 
 #CLEANING DATA
-f_stop_words=open("StopWords_GenericLong.txt", "r")
-stop_words=[str(i[0:-1]) for i in f_stop_words]
+# f_stop_words=open("StopWords_GenericLong.txt", "r")
+# stop_words=[str(i[0:-1]) for i in f_stop_words]
 avoid=['@','#','$','%','^','&','*','(',')','_','=','+','[',']','|','\n','\t','<','>','/']
 
 # READING GLOSSARY EXCEL
@@ -37,7 +37,7 @@ df_standards = pd.DataFrame(standards_data)
 df_sentiments = pd.DataFrame(sentiments_data, columns=['keyword', 'sentiment'])
 
 
-create dataframe for materiality and keep count
+# create dataframe for materiality and keep count
 
 
 class reports:
@@ -56,7 +56,7 @@ class reports:
 
 
     # TOKANIZING REPORT
-    def tokenify_glossary(self,report):
+    def tokenify_sentences(self,report):
         buff = ''
         sentences=[]
         for letter in report:
@@ -76,19 +76,29 @@ class reports:
 
     #READ SENTENCES
     def read_sentences(self,sentences):
+        master_list=[]*4
+        df_master_list=pd.DataFrame(master_list, columns=['standards','sub-standard','sentence', 'sentiment'])
         for sentence in sentences:
-            sentence.split("but","yet","so")
+            sentence=re.split('but yet so',sentence)
+            # sentence.split("but","yet","so")
             for section in sentence:
                 doc=nlp(section)
                 root = [token for token in doc if token.head == token][0]
                 root=[root]
                 tree=[]
                 stakeholders = 0
-                tree=create_tree(root,doc,tree)
                 materiality = select_standards(doc)
+                tree=create_tree(root,doc,tree)
                 sentiment = calculate_sentiments(tree)
-
-
+                if materiality:
+                    data_point=[]
+                    for sub_standard in materiality:
+                        data_point.extend(materiality)
+                        data_point.append(section)
+                        data_point.append(sentiment)
+                    df_data_point=pd.Dataframe(data_point)
+                    df_master_list.append(df_data_point)
+        return df_master_list
 
 
     #LIST-TREE
@@ -180,8 +190,10 @@ class reports:
             found=df_standards.loc[df_standards['sub-standard'].head(1) == token].values.tolist()
             if found:
                 materiality.append([found[0][0], found[0][1]])
-            elif found=df_standards.loc[df_standards['text'].head(1) == token].values.tolist():
-                materiality.append(found[0][0], found[0][1]])
+            elif found==df_standards.loc[df_standards['text'].head(1) == token.lemma_].values.tolist():
+                materiality.append([found[0][0], found[0][1]])
+        if not materiality:
+            return 0
         return materiality
 
 
@@ -193,66 +205,29 @@ class reports:
         for items in TREE:
             item_sentiment=0
             items.split("and",",")
-                for item in items:
-                    found=df_sentiments.loc[df_sentiments['keyword'].head(1) == item].values.tolist()
-                    if found:
-                        item_sentiment=item_sentiment+1
-                if not item_sentiment:
-                    item_sentiment=1
-            sentiment=item_sentiment=len(items)*sentiment
+            for item in items:
+                found=df_sentiments.loc[df_sentiments['keyword'].head(1) == item].values.tolist()
+                if found:
+                    item_sentiment=item_sentiment+1
+                    count_descriptive_words=count_descriptive_words+1
+            if not item_sentiment:
+                item_sentiment=1
+            sentiment=item_sentiment+len(items)*sentiment
         return sentiments
 
 
+    # CREATE DATABASE
+    def create_database(self,df_master_list):
+
+        # database to excel
+        with pd.ExcelWriter("database.xlsx") as writer:
+            df_master_list.to_excel(writer)
+        writer.save()
 
 
-
-
-
-    #CREATE GLORRARY
-    # def sort_glossary(self,POS):
-        # sorted_POS=[]
-        #
-        # unsorted_nouns = np.array(POS[0])
-        # sorted_nouns=unsorted_nouns[unsorted_nouns[:, 1].argsort()]
-        # sorted_nouns=self.reduce_glossary(sorted_nouns)
-        # df_nouns = pd.DataFrame(sorted_nouns)
-        # # df_nouns.columns=['frequency','text','lemma','pos','eng-tag','dependency','afinn sentiment','mcdonals sentiment','token id']
-        # df_nouns.columns=['frequency','text','lemma','pos','afinn sentiment']
-        #
-        # unsorted_verbs = np.array(POS[1])
-        # sorted_verbs=unsorted_verbs[unsorted_verbs[:, 1].argsort()]
-        # sorted_verbs=self.reduce_glossary(sorted_verbs)
-        # df_verbs = pd.DataFrame(sorted_verbs)
-        # df_verbs.columns=['frequency','text','lemma','pos','afinn sentiment']
-        #
-        # unsorted_adverbs = np.array(POS[2])
-        # sorted_adverbs=unsorted_adverbs[unsorted_adverbs[:, 1].argsort()]
-        # sorted_adverbs=self.reduce_glossary(sorted_adverbs)
-        # df_adverbs = pd.DataFrame(sorted_adverbs)
-        # df_adverbs.columns=['frequency','text','lemma','pos','afinn sentiment']
-        #
-        # unsorted_adjectives = np.array(POS[3])
-        # sorted_adjectives=unsorted_adjectives[unsorted_adjectives[:, 1].argsort()]
-        # # sorted_adjectives=self.group_synoynms(self.reduce_glossary(sorted_adjectives))
-        # sorted_adjectives=self.reduce_glossary(sorted_adjectives)
-        # df_adjective = pd.DataFrame(sorted_adjectives)
-        # df_adjective.columns=['frequency','text','lemma','pos','afinn sentiment']
-        #
-        # sorted_POS.append(sorted_nouns)
-        # sorted_POS.append(sorted_verbs)
-        # sorted_POS.append(sorted_adverbs)
-        # sorted_POS.append(sorted_adjectives)
-
-        #glossary to excel
-        # with pd.ExcelWriter("companies_glossary/"+self.company+".xlsx") as writer:
-        #     df_nouns.to_excel(writer, sheet_name='Nouns')
-        #     df_verbs.to_excel(writer, sheet_name='Verbs')
-        #     df_adverbs.to_excel(writer, sheet_name='Adverbs')
-        #     df_adjective.to_excel(writer, sheet_name='Adjectives')
-        # writer.save()
-        #
-        # return sorted_POS
-    #print(sort_glossary(divide_glossary(tokenify_glossary(read_file()))))
+HUL = reports("HUL", "HUL 2018-2019_Annual Report copy.txt")
+print(HUL.read_sentences(HUL.tokenify_sentences(HUL.read_file())))
+# print(HUL.create_database(HUL.read_sentences(HUL.tokenify_sentences(HUL.read_file()))))
 
 # HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
 # print(HUL.sort_glossary(HUL.divide_glossary(HUL.tokenify_glossary(HUL.read_file()))))
