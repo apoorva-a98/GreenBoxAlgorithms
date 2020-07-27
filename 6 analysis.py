@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from pandas import DataFrame
 import json
+import re
 
 # INITIALIZING SPACY AND ITS 'en' MODEL
 nlp = spacy.load("en_core_web_sm")
@@ -37,7 +38,9 @@ df_standards = pd.DataFrame(standards_data)
 df_sentiments = pd.DataFrame(sentiments_data, columns=['keyword', 'sentiment'])
 
 
-# create dataframe for materiality and keep count
+# found=df_standards.loc[df_standards['sub-standard'] == "water"].head(1).values.tolist()
+# if found:
+#     print([found[0][0], found[0][1]])
 
 
 class reports:
@@ -87,9 +90,9 @@ class reports:
                 root=[root]
                 tree=[]
                 stakeholders = 0
-                materiality = select_standards(doc)
-                tree=create_tree(root,doc,tree)
-                sentiment = calculate_sentiments(tree)
+                materiality = self.select_standards(doc)
+                tree=self.create_tree(root,doc,tree)
+                sentiment = self.calculate_sentiments(tree)
                 if materiality:
                     data_point=[]
                     for sub_standard in materiality:
@@ -103,18 +106,19 @@ class reports:
 
     #LIST-TREE
     def create_tree(self,temp_head,doc,TREE):
-        doc = self.break_sentence(doc)
+        # doc = self.break_sentence(doc)
         doc = self.merge_compounds(doc)
         doc = self.combine_commas(doc)
         for sub_head in temp_head:
             self.track_subjects(sub_head)
             if not self.ignore_fillers(sub_head):
-                BRANCH =[]
-                BRANCH.append(sub_head.i)
-                BRANCH.append(sub_head.dep_)
-                BRANCH.append(sub_head.text)
-                BRANCH.append(sub_head.head.i)
-                TREE.append(BRANCH)
+                # BRANCH =[]
+                # BRANCH.append(sub_head.i)
+                # BRANCH.append(sub_head.dep_)
+                # BRANCH.append(sub_head.text)
+                # BRANCH.append(sub_head.head.i)
+                # TREE.append(BRANCH)
+                TREE.append(sub_head)
             sub_tree=[child for child in sub_head.children]
             if not sub_tree:
                 continue
@@ -127,6 +131,8 @@ class reports:
         len=0
         index_c=0
         index_h=0
+        index_max=doc[-1].i
+        buffer=doc
         for token in doc:
             if token.dep_=="compound" or (token.dep_=="conj" and (token.text!="and" or token.text!="or" or token.text!="nor")):
                 index_c=token.i
@@ -136,10 +142,13 @@ class reports:
                         retokenizer.merge(doc[index_c:index_h+1], attrs={"dep":token.head.dep_})
                     elif index_c>index_h:
                         retokenizer.merge(doc[index_h:index_c+1], attrs={"dep":token.head.dep_})
-                self.merge_compounds(doc)
+                if doc!=buffer:
+                    self.merge_compounds(doc)
+                else:
+                    continue
             else:
                 len=len+1
-                if len >= doc[-1].i:
+                if len >= index_max:
                     return doc
 
     #Combine descriptive
@@ -147,17 +156,20 @@ class reports:
         len=0
         index_c=0
         index_h=0
-        for token in doc:
-            if (token.pos_=="ADV" or token.pos_=="ADJ" or token.pos_=="NOUN" or token.pos_=="VERB" or token.pos_=="PNON")and doc[token.i+1].text=="," and doc[token.i+2].pos_==token.pos_:
-                index_c=token.i
-                index_h=token.i+2
-                with doc.retokenize() as retokenizer:
-                    retokenizer.merge(doc[index_c:index_h+1], attrs={"dep":token.head.dep_})
-                self.combine_commas(doc)
-            else:
-                len=len+1
-                if len >= doc[-1].i:
-                    return doc
+        if doc[-1].i>=3:
+            index_max=doc[-1].i
+            for token in doc:
+                if (token.pos_=="ADV" or token.pos_=="ADJ" or token.pos_=="NOUN" or token.pos_=="VERB" or token.pos_=="PNON")and doc[token.i+1].text=="," and doc[token.i+2].pos_==token.pos_:
+                    index_c=token.i
+                    index_h=token.i+2
+                    with doc.retokenize() as retokenizer:
+                        if index_h<index_max-1:
+                            retokenizer.merge(doc[index_c:index_h+1], attrs={"dep":token.head.dep_})
+                    self.combine_commas(doc)
+                else:
+                    len=len+1
+                    if len >= index_max:
+                        return doc
 
     #Address sentence breaks
     def break_sentence(self,doc):
@@ -187,11 +199,18 @@ class reports:
     def select_standards(self,doc):
         materiality=[]
         for token in doc:
-            found=df_standards.loc[df_standards['sub-standard'].head(1) == token].values.tolist()
-            if found:
-                materiality.append([found[0][0], found[0][1]])
-            elif found==df_standards.loc[df_standards['text'].head(1) == token.lemma_].values.tolist():
-                materiality.append([found[0][0], found[0][1]])
+            found=df_standards.loc[df_standards['sub-standard'] == token].head(1).values.tolist()
+            try:
+                if found:
+                    # materiality.append([found[0][0], found[0][1]])
+                    materiality.append(found[0][0])
+                    materiality.append(found[0][1])
+                elif found==df_standards.loc[df_standards['text'] == token.lemma_].head(1).values.tolist():
+                    # materiality.append([found[0][0], found[0][1]])
+                    materiality.append(found[0][0])
+                    materiality.append(found[0][1])
+            except:
+                pass
         if not materiality:
             return 0
         return materiality
@@ -201,19 +220,23 @@ class reports:
     def calculate_sentiments(self,TREE):
         count_descriptive_words=0
         sentiment=0
-        TREE=TREE.inverse()
-        for items in TREE:
+        # TREE=TREE.inverse()
+        for items in reversed(TREE):
             item_sentiment=0
-            items.split("and",",")
-            for item in items:
-                found=df_sentiments.loc[df_sentiments['keyword'].head(1) == item].values.tolist()
-                if found:
-                    item_sentiment=item_sentiment+1
-                    count_descriptive_words=count_descriptive_words+1
+            try:
+                items=re.split('and ,',items)
+                for item in items:
+                    found=df_sentiments.loc[df_sentiments['keyword'] == item].head(1).values.tolist()
+                    if found:
+                        item_sentiment=item_sentiment+1
+                        count_descriptive_words=count_descriptive_words+1
+            except TypeError:
+                pass
+            # items.split("and",",")
             if not item_sentiment:
                 item_sentiment=1
             sentiment=item_sentiment+len(items)*sentiment
-        return sentiments
+        return sentiment
 
 
     # CREATE DATABASE
@@ -228,6 +251,15 @@ class reports:
 HUL = reports("HUL", "HUL 2018-2019_Annual Report copy.txt")
 print(HUL.read_sentences(HUL.tokenify_sentences(HUL.read_file())))
 # print(HUL.create_database(HUL.read_sentences(HUL.tokenify_sentences(HUL.read_file()))))
+
+
+
+
+
+
+
+
+
 
 # HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
 # print(HUL.sort_glossary(HUL.divide_glossary(HUL.tokenify_glossary(HUL.read_file()))))
