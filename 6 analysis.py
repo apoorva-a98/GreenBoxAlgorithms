@@ -35,12 +35,19 @@ def read_sentiments():
 standards_data=read_standards()
 sentiments_data=read_sentiments()
 df_standards = pd.DataFrame(standards_data)
-df_sentiments = pd.DataFrame(sentiments_data, columns=['keyword', 'sentiment'])
+df_sentiments = pd.DataFrame(sentiments_data)
+# df_sentiments = pd.DataFrame(sentiments_data, columns=['keyword', 'sentiment'])
+# print(df_standards)
+# print(df_sentiments)
 
 
-# found=df_standards.loc[df_standards['sub-standard'] == "water"].head(1).values.tolist()
-# if found:
-#     print([found[0][0], found[0][1]])
+found=df_standards.loc[df_standards['sub-standard'] == "water"].head(1).values.tolist()
+if found:
+    print([found[0][0], found[0][1]])
+
+found=df_sentiments.loc[df_sentiments['keyword'] == "attempt"].head(1).values.tolist()
+if found:
+    print([found[0][0], found[0][1]])
 
 
 class reports:
@@ -79,36 +86,44 @@ class reports:
 
     #READ SENTENCES
     def read_sentences(self,sentences):
-        master_list=[]*4
-        df_master_list=pd.DataFrame(master_list, columns=['standards','sub-standard','sentence', 'sentiment'])
+        master_list=pd.DataFrame(columns=['standards','sub-standard','sentence', 'sentiment'])
         for sentence in sentences:
-            sentence=re.split('but yet so',sentence)
+            # sentence=re.split('but yet so',sentence)
             # sentence.split("but","yet","so")
-            for section in sentence:
-                doc=nlp(section)
+            # for section in sentence:
+            doc=nlp(sentence)
+            try:
                 root = [token for token in doc if token.head == token][0]
-                root=[root]
-                tree=[]
-                stakeholders = 0
-                materiality = self.select_standards(doc)
+            except:
+                continue
+            root=[root]
+            tree=[]
+            stakeholders = 0
+            materiality = self.select_standards(doc)
+            if materiality:
                 tree=self.create_tree(root,doc,tree)
                 sentiment = self.calculate_sentiments(tree)
-                if materiality:
+                for sub_standard in materiality:
+                    # print(root,doc,sub_standard[0],sub_standard[1],sentence,sentiment)
                     data_point=[]
-                    for sub_standard in materiality:
-                        data_point.extend(materiality)
-                        data_point.append(section)
-                        data_point.append(sentiment)
-                    df_data_point=pd.Dataframe(data_point)
-                    df_master_list.append(df_data_point)
-        return df_master_list
+                    data_point.append(sub_standard[0])
+                    data_point.append(sub_standard[1])
+                    data_point.append(sentence)
+                    data_point.append(sentiment)
+                    to_append = data_point
+                    df_length = len(master_list)
+                    master_list.loc[df_length] = to_append
+                    # print(data_point)
+                    # df_data_point=pd.DataFrame(data_point)
+                    # master_list=master_list.append(df_data_point)
+        return master_list
 
 
     #LIST-TREE
     def create_tree(self,temp_head,doc,TREE):
         # doc = self.break_sentence(doc)
-        doc = self.merge_compounds(doc)
-        doc = self.combine_commas(doc)
+        # doc = self.merge_compounds(doc)
+        # doc = self.combine_commas(doc)
         for sub_head in temp_head:
             self.track_subjects(sub_head)
             if not self.ignore_fillers(sub_head):
@@ -200,57 +215,92 @@ class reports:
         materiality=[]
         for token in doc:
             found=df_standards.loc[df_standards['sub-standard'] == token].head(1).values.tolist()
-            try:
+            # try:
+            if found:
+                # materiality.append([found[0][0], found[0][1]])
+                sub_standard=[]
+                sub_standard.append(found[0][0])
+                sub_standard.append(found[0][1])
+                materiality.append(sub_standard)
+                break
+            else:
+                found=df_standards.loc[df_standards['text'] == token.lemma_].head(1).values.tolist()
                 if found:
                     # materiality.append([found[0][0], found[0][1]])
-                    materiality.append(found[0][0])
-                    materiality.append(found[0][1])
-                elif found==df_standards.loc[df_standards['text'] == token.lemma_].head(1).values.tolist():
-                    # materiality.append([found[0][0], found[0][1]])
-                    materiality.append(found[0][0])
-                    materiality.append(found[0][1])
-            except:
-                pass
+                    sub_standard=[]
+                    sub_standard.append(found[0][0])
+                    sub_standard.append(found[0][1])
+                    materiality.append(sub_standard)
+                else:
+                    continue
+            # except:
+                # pass
         if not materiality:
             return 0
         return materiality
-
 
     #CALCULATE SENTIMENTS
     def calculate_sentiments(self,TREE):
         count_descriptive_words=0
         sentiment=0
-        # TREE=TREE.inverse()
-        for items in reversed(TREE):
+        for item in reversed(TREE):
             item_sentiment=0
             try:
-                items=re.split('and ,',items)
-                for item in items:
-                    found=df_sentiments.loc[df_sentiments['keyword'] == item].head(1).values.tolist()
-                    if found:
-                        item_sentiment=item_sentiment+1
-                        count_descriptive_words=count_descriptive_words+1
+                found=df_sentiments.loc[df_sentiments["keyword"] == item.lemma_].head(1).values.tolist()
+                if found:
+                    item_sentiment=item_sentiment+found[0][1]
+                    count_descriptive_words=count_descriptive_words+1
             except TypeError:
                 pass
-            # items.split("and",",")
+
             if not item_sentiment:
                 item_sentiment=1
-            sentiment=item_sentiment+len(items)*sentiment
+            if str(item)=="not" or str(item)=="nor":
+                print(item)
+                sentiment=item_sentiment+(-1)*sentiment
+            else:
+                sentiment=item_sentiment+sentiment
+        # print(sentiment,count_descriptive_words)
+        if count_descriptive_words:
+            sentiment=sentiment/count_descriptive_words
         return sentiment
+
+
+    # #CALCULATE SENTIMENTS
+    # def calculate_sentiments(self,TREE):
+    #     count_descriptive_words=0
+    #     sentiment=0
+    #     # TREE=TREE.inverse()
+    #     for items in reversed(TREE):
+    #         item_sentiment=0
+    #         try:
+    #             items=re.split('and ,',items)
+    #             for item in items:
+    #                 found=df_sentiments.loc[df_sentiments['keyword'] == item].head(1).values.tolist()
+    #                 if found:
+    #                     item_sentiment=item_sentiment+1
+    #                     count_descriptive_words=count_descriptive_words+1
+    #         except TypeError:
+    #             pass
+    #         # items.split("and",",")
+    #         if not item_sentiment:
+    #             item_sentiment=1
+    #         sentiment=item_sentiment+len(items)*sentiment
+    #     return sentiment
 
 
     # CREATE DATABASE
     def create_database(self,df_master_list):
 
         # database to excel
-        with pd.ExcelWriter("database.xlsx") as writer:
+        with pd.ExcelWriter(self.company+"database.xlsx") as writer:
             df_master_list.to_excel(writer)
         writer.save()
 
 
-HUL = reports("HUL", "HUL 2018-2019_Annual Report copy.txt")
-print(HUL.read_sentences(HUL.tokenify_sentences(HUL.read_file())))
-# print(HUL.create_database(HUL.read_sentences(HUL.tokenify_sentences(HUL.read_file()))))
+HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
+# print(HUL.read_sentences(HUL.tokenify_sentences(HUL.read_file())))
+print(HUL.create_database(HUL.read_sentences(HUL.tokenify_sentences(HUL.read_file()))))
 
 
 
