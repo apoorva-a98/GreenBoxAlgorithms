@@ -77,45 +77,64 @@ class reports:
 
     #READING TWEETS
     def read_tweets(self):
-        master_list=pd.DataFrame(columns=['standards','sub-standard','sentence', 'sentiment','time'])
+        master_list=pd.DataFrame(columns=['standards','sub-standard','sentence', 'sentiment','time','retweets'])
         stakeholders = 0
         materiality_count = []
-        for keyword in keywords:
-            search_terms=[keyword, self.company]
-            public_tweets = api.search(q=search_terms, lang="en", count=100)      # q= “string that we are looking for”
+        for keyword in keywords[0:1]:
+            search_terms=["company", self.company]
+            # public_tweets = api.search(q=search_terms, lang="en", count=100)      # q= “string that we are looking for”
+            # public_tweets=[]
+            for tweet in tweepy.Cursor(api.search, q=search_terms, lang="en").items(5000000):
+                if (not tweet.retweeted) and ('RT @' not in tweet.text):
+            #         try:
+            #             item=[]
+            #             item.append(tweet.text.encode('utf-8'))
+            #             item.append(tweet.created_at)
+            #             item.append(tweet.retweet_count)
+            #             public_tweets.append(item)
+            #         except:
+            #             continue
+            # print(public_tweets)
 
-            # for each tweet within all tweets pulled
-            for tweet in public_tweets:
-                tweet_time=tweet.created_at
-                tweet=str(tweet.text)
-                sentences = self.tokenify_tweet(tweet)
-                for sentence in sentences:
-                    doc=nlp(sentence)
+                # for each tweet within all tweets pulled
+                # for tweet in public_tweets:
+                    tweet_time="-"
+                    tweet_retweet_count="-"
                     try:
-                        root = [token for token in doc if token.head == token][0]
+                        tweet_time=tweet.created_at
+                        tweet_retweet_count=tweet.retweet_count
                     except:
-                        continue
-                    root=[root]
-                    tree=[]
-                    materiality = self.select_standards(doc)
-                    if materiality:
-                        tree=self.create_tree(root,doc,tree)
-                        sentiment = self.calculate_sentiments(tree)
-                        for sub_standard in materiality:
-                            # print(sub_standard,materiality,len(materiality))
-                            # print(root,doc,sub_standard[0],sub_standard[1],sentence,sentiment)
-                            data_point=[]
-                            data_point.append(sub_standard[0])
-                            data_point.append(sub_standard[1])
-                            data_point.append(sentence)
-                            data_point.append(sentiment)
-                            data_point.append(tweet_time)
-                            to_append = data_point
-                            df_length = len(master_list)
-                            master_list.loc[df_length] = to_append
+                        pass
+                    tweet=str(tweet.text.encode('utf-8'))
+                    sentences = self.tokenify_tweet(tweet)
+                    for sentence in sentences:
+                        doc=nlp(sentence)
+                        try:
+                            root = [token for token in doc if token.head == token][0]
+                        except:
+                            continue
+                        root=[root]
+                        tree=[]
+                        materiality = self.select_standards(doc)
+                        if materiality:
+                            tree=self.create_tree(root,doc,tree)
+                            sentiment = self.calculate_sentiments(tree)
+                            for sub_standard in materiality:
+                                # print(sub_standard,materiality,len(materiality))
+                                # print(root,doc,sub_standard[0],sub_standard[1],sentence,sentiment)
+                                data_point=[]
+                                data_point.append(sub_standard[0])
+                                data_point.append(sub_standard[1])
+                                data_point.append(sentence)
+                                data_point.append(sentiment)
+                                data_point.append(tweet_time)
+                                data_point.append(tweet_retweet_count)
+                                to_append = data_point
+                                df_length = len(master_list)
+                                master_list.loc[df_length] = to_append
 
-                            if sub_standard[1] not in materiality_count:
-                                materiality_count.append(sub_standard[1])
+                                if sub_standard[1] not in materiality_count:
+                                    materiality_count.append(sub_standard[1])
 
         print(stakeholders)
         print(materiality_count)

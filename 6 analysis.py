@@ -300,11 +300,10 @@ class reports:
 
 
 # HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
-# # print(HUL.read_sentences(HUL.tokenify_sentences(HUL.read_file())))
 # print(HUL.create_database(HUL.read_sentences(HUL.tokenify_sentences(HUL.read_file()))))
 
 Colgate = reports("Colgate", "Colgate 2018-2019_Annual Report.txt")
-print(Colgate.sort_glossary(Colgate.divide_glossary(Colgate.tokenify_glossary(Colgate.read_file()))))
+print(Colgate.create_database(Colgate.read_sentences(Colgate.tokenify_sentences(Colgate.read_file()))))
 #
 # ITC = reports("ITC", "ITC 2018-2019 Annual Report.txt")
 # print(ITC.sort_glossary(ITC.divide_glossary(ITC.tokenify_glossary(ITC.read_file()))))
