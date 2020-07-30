@@ -44,97 +44,88 @@ for item in glossary:
     if item[1] not in keywords:
         keywords.append(item[1])
 
-
-# wb = Workbook(encoding='ascii')
-# sheet1 = wb.add_sheet('Tweets')
-# sheet2 = wb.add_sheet('Sentiment')
-
 # Authenticate to Twitter
 auth = tweepy.OAuthHandler("oGMSF0ZE60EPmq63CnJ5OVy56", "hoqrp3VgWWvzE3OjAT6iCD8upY4vc3UwcswH3Fk5Q4x46xllGK")
 auth.set_access_token("847417106-WmqvtW8uv0HSHy0MXMpOjLEesVHoq450uXODLG9E", "ek7td0b383tqC75ZZ3bcuOqzl9ooxOrkpUAdjjHs5qp14")
 
 # Create API object
 api = tweepy.API(auth)
+# api.update_status(status='Test')
 
 
 class reports:
     def __init__(self, name):
         self.company = name
 
-    for j in range(3):
-        sheet1.write(0, j, standards_title[j])
-        count = 1
-        for k in range(10):
-            search_terms=[standards[j][k], "HUL"]
-    #search_terms=["plastic HUL", "air HUL", "water HUL", "energy HUL", "materials HUL", "waste HUL", "habitat HUL", "wildlife HUL", "sustainable HUL", "emissions HUL", "plastic HUL"]
-        #for i in range(len(search_terms)):
+    # TOKANIZING SINGLE TWEET
+    def tokenify_tweet(self,tweet):
+        buff = ''
+        sentences=[]
+        for letter in tweet:
+            letter=letter.lower()
+            if letter in avoid:
+                if buff != '':
+                    sentences.append(buff)
+                buff = ''
+            elif (buff is not None):
+                buff += letter
+        if buff is not None:
+            sentences.append(buff)
+            buff=''
+        return sentences
+    #print(tokenify_glossary(read_file()))
+
+    #READING TWEETS
+    def read_tweets(self):
+        master_list=pd.DataFrame(columns=['standards','sub-standard','sentence', 'sentiment','time'])
+        stakeholders = 0
+        materiality_count = []
+        for keyword in keywords:
+            search_terms=[keyword, self.company]
             public_tweets = api.search(q=search_terms, lang="en", count=100)      # q= “string that we are looking for”
-            # foreach through all tweets pulled
+
+            # for each tweet within all tweets pulled
             for tweet in public_tweets:
-                #print(standards[j][k],count)
-                sheet1.write(count, j, tweet.text)
-                sheet1.write(count, j+3, str(tweet.created_at))
-                #print (tweet.text)   #printing the text stored inside the tweet object
-                print (tweet.created_at)   #printing the time
-                sentence=tweet.text.split(' ')
-                sentiment_count =0
-                for l in sentence:
-                    if l in data:
-                        sentiment_count = sentiment_count + data[l]
-                sheet2.write(count, j, sentiment_count/len(tweet.text))
-                count=count+1
-        print(count)
+                tweet_time=tweet.created_at
+                tweet=str(tweet)
+                sentences = self.tokenify_tweet(tweet)
+                for sentence in sentences:
+                    doc=nlp(sentence)
+                    try:
+                        root = [token for token in doc if token.head == token][0]
+                    except:
+                        continue
+                    root=[root]
+                    tree=[]
+                    materiality = self.select_standards(doc)
+                    tree=self.create_tree(root,doc,tree)
+                    sentiment = self.calculate_sentiments(tree)
+                    for sub_standard in materiality:
+                        print(sub_standard[0],sub_standard[1])
+                        # print(root,doc,sub_standard[0],sub_standard[1],sentence,sentiment)
+                        data_point=[]
+                        data_point.append(sub_standard[0])
+                        data_point.append(sub_standard[1])
+                        data_point.append(sentence)
+                        data_point.append(sentiment)
+                        data_point.append(tweet_time)
+                        to_append = data_point
+                        df_length = len(master_list)
+                        master_list.loc[df_length] = to_append
 
+                        if sub_standard[1] not in materiality_count:
+                            materiality_count.append(sub_standard[1])
 
-    #READ SENTENCES
-    def read_sentences(self,sentences):
-        master_list=pd.DataFrame(columns=['standards','sub-standard','sentence', 'sentiment'])
-        for sentence in sentences:
-            # sentence=re.split('but yet so',sentence)
-            # sentence.split("but","yet","so")
-            # for section in sentence:
-            doc=nlp(sentence)
-            try:
-                root = [token for token in doc if token.head == token][0]
-            except:
-                continue
-            root=[root]
-            tree=[]
-            stakeholders = 0
-            materiality = self.select_standards(doc)
-            if materiality:
-                tree=self.create_tree(root,doc,tree)
-                sentiment = self.calculate_sentiments(tree)
-                for sub_standard in materiality:
-                    # print(root,doc,sub_standard[0],sub_standard[1],sentence,sentiment)
-                    data_point=[]
-                    data_point.append(sub_standard[0])
-                    data_point.append(sub_standard[1])
-                    data_point.append(sentence)
-                    data_point.append(sentiment)
-                    to_append = data_point
-                    df_length = len(master_list)
-                    master_list.loc[df_length] = to_append
-                    # print(data_point)
-                    # df_data_point=pd.DataFrame(data_point)
-                    # master_list=master_list.append(df_data_point)
+        print(stakeholders)
+        print(materiality_count)
         return master_list
 
 
     #LIST-TREE
     def create_tree(self,temp_head,doc,TREE):
-        # doc = self.break_sentence(doc)
-        # doc = self.merge_compounds(doc)
-        # doc = self.combine_commas(doc)
         for sub_head in temp_head:
             self.track_subjects(sub_head)
             if not self.ignore_fillers(sub_head):
-                # BRANCH =[]
-                # BRANCH.append(sub_head.i)
-                # BRANCH.append(sub_head.dep_)
-                # BRANCH.append(sub_head.text)
-                # BRANCH.append(sub_head.head.i)
-                # TREE.append(BRANCH)
                 TREE.append(sub_head)
             sub_tree=[child for child in sub_head.children]
             if not sub_tree:
@@ -163,27 +154,22 @@ class reports:
     def select_standards(self,doc):
         materiality=[]
         for token in doc:
-            found=df_standards.loc[df_standards['sub-standard'] == token].head(1).values.tolist()
-            # try:
+            found=standards_data.loc[standards_data['sub-standard'] == token].head(1).values.tolist()
             if found:
-                # materiality.append([found[0][0], found[0][1]])
                 sub_standard=[]
                 sub_standard.append(found[0][0])
                 sub_standard.append(found[0][1])
                 materiality.append(sub_standard)
                 break
             else:
-                found=df_standards.loc[df_standards['text'] == token.lemma_].head(1).values.tolist()
+                found=standards_data.loc[standards_data['text'] == token.lemma_].head(1).values.tolist()
                 if found:
-                    # materiality.append([found[0][0], found[0][1]])
                     sub_standard=[]
                     sub_standard.append(found[0][0])
                     sub_standard.append(found[0][1])
                     materiality.append(sub_standard)
                 else:
                     continue
-            # except:
-                # pass
         if not materiality:
             return 0
         return materiality
@@ -196,7 +182,7 @@ class reports:
         for item in reversed(TREE):
             item_sentiment=0
             try:
-                found=df_sentiments.loc[df_sentiments["keyword"] == item.lemma_].head(1).values.tolist()
+                found=sentiments_data.loc[sentiments_data["keyword"] == item.lemma_].head(1).values.tolist()
                 if found:
                     item_sentiment=item_sentiment+found[0][1]
                     count_descriptive_words=count_descriptive_words+1
@@ -215,56 +201,14 @@ class reports:
             sentiment=sentiment/count_descriptive_words
         return sentiment
 
+    # CREATE DATABASE
+    def create_database(self,df_master_list):
 
-# f_glossary=open("glossary.txt", "r")
-# fin = []
-# soc = []
-# env = []
-# item_g = f_glossary.read().split("|")
-# fin=item_g[0].split(",")
-# soc=item_g[1].split(",")
-# env=item_g[2].split(",")
-# standards=[env,soc,fin]
-# standards_title=['env','soc','fin']
-#print(standards)
-# Create a tweet
-#api.update_status("Hello Tweepy")
+        # database to excel
+        with pd.ExcelWriter(self.company+"tweets.xlsx") as writer:
+            df_master_list.to_excel(writer)
+        writer.save()
 
-# Using the API object to get tweets from your timeline, and storing it in a variable called public_tweets
-#public_tweets = api.home_timeline()
-
-# Using the API object to get tweets from a user’s timeline, and storing it in a variable called public_tweets
-#public_tweets = api.user_timeline(id,count)     # max is 20 coz twitter put a limit to it
-# for j in range(3):
-#     sheet1.write(0, j, standards_title[j])
-#     count = 1
-#     for k in range(10):
-#         search_terms=[standards[j][k], "HUL"]
-# #search_terms=["plastic HUL", "air HUL", "water HUL", "energy HUL", "materials HUL", "waste HUL", "habitat HUL", "wildlife HUL", "sustainable HUL", "emissions HUL", "plastic HUL"]
-#     #for i in range(len(search_terms)):
-#         public_tweets = api.search(q=search_terms, lang="en", count=100)      # q= “string that we are looking for”
-#         # foreach through all tweets pulled
-#         for tweet in public_tweets:
-#             #print(standards[j][k],count)
-#             sheet1.write(count, j, tweet.text)
-#             sheet1.write(count, j+3, str(tweet.created_at))
-#             #print (tweet.text)   #printing the text stored inside the tweet object
-#             print (tweet.created_at)   #printing the time
-#             sentence=tweet.text.split(' ')
-#             sentiment_count =0
-#             for l in sentence:
-#                 if l in data:
-#                     sentiment_count = sentiment_count + data[l]
-#             sheet2.write(count, j, sentiment_count/len(tweet.text))
-#             count=count+1
-#     print(count)
-    #print (tweet.user.screen_name)   #printing the username
-    #print (tweet.user.location)   #printing the location
-
-# API reference index – Twitter developer tools
-#https://developer.twitter.com/en/docs/api-reference-index
-
-# Rate Limiting - Twitter
-#https://developer.twitter.com/en/docs/basics/rate-limiting
-
-# wb.save('Tweets.xls')
+HUL = reports("HUL")
+# print(HUL.read_sentences(HUL.tokenify_sentences(HUL.read_file())))
+print(HUL.create_database(HUL.read_tweets()))

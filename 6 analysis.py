@@ -241,6 +241,7 @@ class reports:
 
     #CALCULATE SENTIMENTS
     def calculate_sentiments(self,TREE):
+        #add afinn
         count_descriptive_words=0
         sentiment=0
         for item in reversed(TREE):
