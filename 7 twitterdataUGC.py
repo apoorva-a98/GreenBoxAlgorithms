@@ -206,6 +206,9 @@ class reports:
                 if found:
                     item_sentiment=item_sentiment+found[0][1]
                     count_descriptive_words=count_descriptive_words+1
+                elif item in data:
+                    item_sentiment=item_sentiment+data[item]
+                    count_descriptive_words=count_descriptive_words+1
             except TypeError:
                 pass
 
