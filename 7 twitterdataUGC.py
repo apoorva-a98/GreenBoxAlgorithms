@@ -87,7 +87,7 @@ class reports:
             # for each tweet within all tweets pulled
             for tweet in public_tweets:
                 tweet_time=tweet.created_at
-                tweet=str(tweet)
+                tweet=str(tweet.text)
                 sentences = self.tokenify_tweet(tweet)
                 for sentence in sentences:
                     doc=nlp(sentence)
@@ -211,5 +211,4 @@ class reports:
         writer.save()
 
 HUL = reports("HUL")
-# print(HUL.read_sentences(HUL.tokenify_sentences(HUL.read_file())))
 print(HUL.create_database(HUL.read_tweets()))
