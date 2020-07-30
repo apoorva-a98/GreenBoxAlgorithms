@@ -80,10 +80,24 @@ import json
 with open('afinn.json') as f:
   data = json.load(f)
 
+# READING GLOSSARY EXCEL
+def read_standards():
+    sheet= pd.read_excel("Standards.xlsx")
+    return sheet
+
+# READING SENTIMENTS EXCEL
+def read_sentiments():
+    sheet= pd.read_excel("Sentiments.xlsx")
+    return sheet
+
+standards_data=read_standards()
+sentiments_data=read_sentiments()
+df_standards = pd.DataFrame(standards_data)
+df_sentiments = pd.DataFrame(sentiments_data)
+
 wb = Workbook(encoding='ascii')
 sheet1 = wb.add_sheet('Tweets')
 sheet2 = wb.add_sheet('Sentiment')
-
 
 # Authenticate to Twitter
 auth = tweepy.OAuthHandler("oGMSF0ZE60EPmq63CnJ5OVy56", "hoqrp3VgWWvzE3OjAT6iCD8upY4vc3UwcswH3Fk5Q4x46xllGK")
@@ -143,4 +157,4 @@ for j in range(3):
 # Rate Limiting - Twitter
 #https://developer.twitter.com/en/docs/basics/rate-limiting
 
-wb.save('Tweets.xls') 
+wb.save('Tweets.xls')
