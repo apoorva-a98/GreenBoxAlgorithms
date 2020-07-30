@@ -88,9 +88,6 @@ class reports:
     def read_sentences(self,sentences):
         master_list=pd.DataFrame(columns=['standards','sub-standard','sentence', 'sentiment'])
         for sentence in sentences:
-            # sentence=re.split('but yet so',sentence)
-            # sentence.split("but","yet","so")
-            # for section in sentence:
             doc=nlp(sentence)
             try:
                 root = [token for token in doc if token.head == token][0]
@@ -301,6 +298,8 @@ class reports:
             df_master_list.to_excel(writer)
         writer.save()
 
+# HUL = reports("HUL", "HUL 2018-2019_Annual Report copy.txt")
+# print(HUL.create_database(HUL.read_sentences(HUL.tokenify_sentences(HUL.read_file()))))
 
 HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
 print(HUL.create_database(HUL.read_sentences(HUL.tokenify_sentences(HUL.read_file()))))
