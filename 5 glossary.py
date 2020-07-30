@@ -110,7 +110,7 @@ class reports:
                     if token.pos_ == 'NOUN' and self.check_existing(token.text) == 0 and len(token.text)>2 and token.text.isalpha():
                         new_noun=[]
                         new_noun.append(faulter[0])
-                        new_noun.append(faulter[2])
+                        new_noun.append(faulter[1])
                         new_noun.append(token.text)
                         Nouns.append(new_noun)
 

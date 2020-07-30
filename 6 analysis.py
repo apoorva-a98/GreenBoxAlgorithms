@@ -15,7 +15,7 @@ nlp = spacy.load("en_core_web_sm")
 
 # OPENING JSON SENTIMENT DICTIONARY
 with open('afinn-165.json') as f:
-  items_afinn = json.load(f)
+  data = json.load(f)
 
 #CLEANING DATA
 # f_stop_words=open("StopWords_GenericLong.txt", "r")
