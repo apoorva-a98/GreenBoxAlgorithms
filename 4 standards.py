@@ -50,7 +50,6 @@ def read_glossary():
     sheet = sheet.values.tolist()
     return sheet
 
-AbstractNouns=[]
 
 # GROUPING DESCRIPTIVE WORDS
 def sort_standards(Nouns, Glossary):
