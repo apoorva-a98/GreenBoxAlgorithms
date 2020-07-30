@@ -98,23 +98,24 @@ class reports:
                     root=[root]
                     tree=[]
                     materiality = self.select_standards(doc)
-                    tree=self.create_tree(root,doc,tree)
-                    sentiment = self.calculate_sentiments(tree)
-                    for sub_standard in materiality:
-                        print(sub_standard[0],sub_standard[1])
-                        # print(root,doc,sub_standard[0],sub_standard[1],sentence,sentiment)
-                        data_point=[]
-                        data_point.append(sub_standard[0])
-                        data_point.append(sub_standard[1])
-                        data_point.append(sentence)
-                        data_point.append(sentiment)
-                        data_point.append(tweet_time)
-                        to_append = data_point
-                        df_length = len(master_list)
-                        master_list.loc[df_length] = to_append
+                    if materiality:
+                        tree=self.create_tree(root,doc,tree)
+                        sentiment = self.calculate_sentiments(tree)
+                        for sub_standard in materiality:
+                            # print(sub_standard,materiality,len(materiality))
+                            # print(root,doc,sub_standard[0],sub_standard[1],sentence,sentiment)
+                            data_point=[]
+                            data_point.append(sub_standard[0])
+                            data_point.append(sub_standard[1])
+                            data_point.append(sentence)
+                            data_point.append(sentiment)
+                            data_point.append(tweet_time)
+                            to_append = data_point
+                            df_length = len(master_list)
+                            master_list.loc[df_length] = to_append
 
-                        if sub_standard[1] not in materiality_count:
-                            materiality_count.append(sub_standard[1])
+                            if sub_standard[1] not in materiality_count:
+                                materiality_count.append(sub_standard[1])
 
         print(stakeholders)
         print(materiality_count)

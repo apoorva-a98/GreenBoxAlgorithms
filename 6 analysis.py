@@ -303,18 +303,6 @@ HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
 # print(HUL.read_sentences(HUL.tokenify_sentences(HUL.read_file())))
 print(HUL.create_database(HUL.read_sentences(HUL.tokenify_sentences(HUL.read_file()))))
 
-
-
-
-
-
-
-
-
-
-# HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
-# print(HUL.sort_glossary(HUL.divide_glossary(HUL.tokenify_glossary(HUL.read_file()))))
-#
 # Colgate = reports("Colgate", "Colgate 2018-2019_Annual Report.txt")
 # print(Colgate.sort_glossary(Colgate.divide_glossary(Colgate.tokenify_glossary(Colgate.read_file()))))
 #
