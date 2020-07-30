@@ -16,7 +16,7 @@ nlp = spacy.load("en_core_web_sm")
 
 # OPENING JSON SENTIMENT DICTIONARY
 with open('afinn-165.json') as f:
-  items_afinn = json.load(f)
+  data = json.load(f)
 
 #CLEANING DATA
 # f_stop_words=open("StopWords_GenericLong.txt", "r")
@@ -80,8 +80,8 @@ class reports:
         master_list=pd.DataFrame(columns=['standards','sub-standard','sentence', 'sentiment','time','retweets'])
         stakeholders = 0
         materiality_count = []
-        for keyword in keywords[0:1]:
-            search_terms=["company", self.company]
+        for keyword in keywords:
+            search_terms=[keyword, self.company]
             # public_tweets = api.search(q=search_terms, lang="en", count=100)      # q= “string that we are looking for”
             # public_tweets=[]
             for tweet in tweepy.Cursor(api.search, q=search_terms, lang="en").items(5000000):
