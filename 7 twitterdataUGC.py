@@ -235,5 +235,5 @@ class reports:
             df_master_list.to_excel(writer)
         writer.save()
 
-HUL = reports("HUL")
-print(HUL.create_database(HUL.read_tweets()))
+ITC = reports("Marico")
+print(ITC.create_database(ITC.read_tweets()))
