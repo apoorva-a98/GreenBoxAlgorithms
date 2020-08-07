@@ -5,6 +5,9 @@
 #     give the same standard and substandard as reporting requirements
 #     store the remaining words in AbstractNouns = []
 
+
+
+
 #!/usr/bin/env python3
 
 import xlwt

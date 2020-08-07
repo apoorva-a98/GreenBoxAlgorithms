@@ -298,29 +298,26 @@ class reports:
             df_master_list.to_excel(writer)
         writer.save()
 
-# HUL = reports("HUL", "HUL 2018-2019_Annual Report copy.txt")
-# print(HUL.create_database(HUL.read_sentences(HUL.tokenify_sentences(HUL.read_file()))))
-
 HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
 print(HUL.create_database(HUL.read_sentences(HUL.tokenify_sentences(HUL.read_file()))))
 
-# Colgate = reports("Colgate", "Colgate 2018-2019_Annual Report.txt")
-# print(Colgate.create_database(Colgate.read_sentences(Colgate.tokenify_sentences(Colgate.read_file()))))
-#
-# ITC = reports("ITC", "ITC 2018-2019 Annual Report.txt")
-# print(ITC.sort_glossary(ITC.divide_glossary(ITC.tokenify_glossary(ITC.read_file()))))
-#
-# Dabur = reports("Dabur", "Dabur 2018-19_Annual Report.txt")
-# print(Dabur.sort_glossary(Dabur.divide_glossary(Dabur.tokenify_glossary(Dabur.read_file()))))
-#
-# Godrej = reports("Godrej", "Godrej 2018-2019_Annual Report.txt")
-# print(Godrej.sort_glossary(Godrej.divide_glossary(Godrej.tokenify_glossary(Godrej.read_file()))))
-#
-# Marico = reports("Marico", "Marico 2018-2019_Annual Report.txt")
-# print(Marico.sort_glossary(Marico.divide_glossary(Marico.tokenify_glossary(Marico.read_file()))))
-#
-# Nestle = reports("Nestle", "Nestle 2017-2018_Annual Report.txt")
-# print(Nestle.sort_glossary(Nestle.divide_glossary(Nestle.tokenify_glossary(Nestle.read_file()))))
-#
-# PnG = reports("PnG", "P&G 2018-2019_Annual Report.txt")
-# print(PnG.sort_glossary(PnG.divide_glossary(PnG.tokenify_glossary(PnG.read_file()))))
+Colgate = reports("Colgate", "Colgate 2018-2019_Annual Report.txt")
+print(Colgate.create_database(Colgate.read_sentences(Colgate.tokenify_sentences(Colgate.read_file()))))
+
+ITC = reports("ITC", "ITC 2018-2019 Annual Report.txt")
+print(ITC.sort_glossary(ITC.divide_glossary(ITC.tokenify_glossary(ITC.read_file()))))
+
+Dabur = reports("Dabur", "Dabur 2018-19_Annual Report.txt")
+print(Dabur.sort_glossary(Dabur.divide_glossary(Dabur.tokenify_glossary(Dabur.read_file()))))
+
+Godrej = reports("Godrej", "Godrej 2018-2019_Annual Report.txt")
+print(Godrej.sort_glossary(Godrej.divide_glossary(Godrej.tokenify_glossary(Godrej.read_file()))))
+
+Marico = reports("Marico", "Marico 2018-2019_Annual Report.txt")
+print(Marico.sort_glossary(Marico.divide_glossary(Marico.tokenify_glossary(Marico.read_file()))))
+
+Nestle = reports("Nestle", "Nestle 2017-2018_Annual Report.txt")
+print(Nestle.sort_glossary(Nestle.divide_glossary(Nestle.tokenify_glossary(Nestle.read_file()))))
+
+PnG = reports("PnG", "P&G 2018-2019_Annual Report.txt")
+print(PnG.sort_glossary(PnG.divide_glossary(PnG.tokenify_glossary(PnG.read_file()))))

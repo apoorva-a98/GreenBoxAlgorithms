@@ -8,6 +8,13 @@
 #         check if the noun is the sentence is not in glossary_nouns
 #         append the nouns to the nouns list
 
+
+
+
+
+
+
+
 #!/usr/bin/env python3
 
 # from nltk.corpus import wordnet

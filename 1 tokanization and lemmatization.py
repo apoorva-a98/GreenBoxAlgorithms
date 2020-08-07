@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-# from nltk.corpus import wordnet
 import xlwt
 from xlwt import Workbook
 import spacy
@@ -25,7 +24,6 @@ for i in range(1,8):
     items_mcdonals[i-1]=pd.read_excel(file_path, sheet_name=i)
     items_mcdonals[i-1]=items_mcdonals[i-1].values.tolist()
     items_mcdonals[i-1] = [item.lower() for sublist in items_mcdonals[i-1] for item in sublist]
-#print(items_mcdonals[2])
 
 #CLEANING DATA
 f_stop_words=open("StopWords_GenericLong.txt", "r")
@@ -45,7 +43,6 @@ class reports:
         report= open(self.filepath, "r", encoding = "ISO-8859-1")
         report_text= report.read()
         return report_text
-    #print(read_file())
 
 
     # TOKANIZING REPORT
@@ -64,7 +61,6 @@ class reports:
             sentences.append(buff)
             buff=''
         return sentences
-    #print(tokenify_glossary(read_file()))
 
 
     #GLORRARY SRANDARDS
@@ -84,8 +80,7 @@ class reports:
                 word.append(token.text)
                 word.append(token.lemma_)
                 word.append(token.pos_)
-                # word.append(token.tag_)
-                # word.append(token.dep_)
+
 
                 #afinn sentiments
                 if token.text in items_afinn:              #apoorva create a function for this later
@@ -93,15 +88,6 @@ class reports:
                 else:
                     word.append('')
 
-                #mcdonald sentiments
-                # mc_rating=0
-                # for i in range(7):                  #apoorva create a function for this later
-                #     if token.text in items_mcdonals[i] or token.lemma_ in items_mcdonals[i]:
-                #         mc_rating=i
-                # if mc_rating != 0:
-                #     word.append(mc_rating)
-                # else:
-                #     word.append('')
 
                 #parts of speech segregation
                 if token.pos_ == 'NOUN' or token.pos_ == 'PROPN':
@@ -120,28 +106,7 @@ class reports:
             POS.append(glossary_adjectives)
 
         return POS
-    #print(divide_glossary(tokenify_glossary(read_file())))
 
-
-    #GROUPING SYNONYMS
-    # def remove_duplication_from_wordnet(self,keyword):
-    #     synonym_list=[]
-    #     synonym_list.append(keyword)
-    #     for syn in wordnet.synsets(keyword):
-    #         for synonym in syn.lemmas():
-    #             if synonym.name() not in synonym_list:
-    #                 synonym_list.append(synonym.name())
-    #     return synonym_list
-    #
-    # def group_synoynms(self,POS):
-    #     token_id=1
-    #     for i in POS:
-    #         synonym_list= self.remove_duplication_from_wordnet(i[1])
-    #         for j in POS:
-    #             if j[1] in synonym_list and j[8] is not None:
-    #                 j[8] = token_id
-    #         token_id = token_id +1
-    #     return POS
 
     #RETAINING ABBREVIATIONS
     def is_abbreviation(self,word):
@@ -153,7 +118,6 @@ class reports:
     #REDUCE DUPLICATE WORDS AND FREQUENCY
     def reduce_glossary(self,sorted_words):
         glossary=[]
-        # token_id=''
         while(len(sorted_words)>0):
             abb=0
             count=1
@@ -169,7 +133,6 @@ class reports:
             if sorted_words[0][0] not in stop_words and len(sorted_words[0][0])>2 and sorted_words[0][0].isalpha() and abb==0:
                 word_frequency.append(count)
                 word_frequency.extend(sorted_words[0])
-                # word_frequency.append(token_id)
                 glossary.append(word_frequency)
             sorted_words=np.delete(sorted_words, 0, 0)
         return glossary
@@ -183,7 +146,6 @@ class reports:
         sorted_nouns=unsorted_nouns[unsorted_nouns[:, 1].argsort()]
         sorted_nouns=self.reduce_glossary(sorted_nouns)
         df_nouns = pd.DataFrame(sorted_nouns)
-        # df_nouns.columns=['frequency','text','lemma','pos','eng-tag','dependency','afinn sentiment','mcdonals sentiment','token id']
         df_nouns.columns=['frequency','text','lemma','pos','afinn sentiment']
 
         unsorted_verbs = np.array(POS[1])
@@ -200,7 +162,6 @@ class reports:
 
         unsorted_adjectives = np.array(POS[3])
         sorted_adjectives=unsorted_adjectives[unsorted_adjectives[:, 1].argsort()]
-        # sorted_adjectives=self.group_synoynms(self.reduce_glossary(sorted_adjectives))
         sorted_adjectives=self.reduce_glossary(sorted_adjectives)
         df_adjective = pd.DataFrame(sorted_adjectives)
         df_adjective.columns=['frequency','text','lemma','pos','afinn sentiment']
@@ -219,32 +180,33 @@ class reports:
         writer.save()
 
         return sorted_POS
-    #print(sort_glossary(divide_glossary(tokenify_glossary(read_file()))))
 
 
-# HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
-# print(HUL.sort_glossary(HUL.divide_glossary(HUL.tokenify_glossary(HUL.read_file()))))
-#
-# Colgate = reports("Colgate", "Colgate 2018-2019_Annual Report.txt")
-# print(Colgate.sort_glossary(Colgate.divide_glossary(Colgate.tokenify_glossary(Colgate.read_file()))))
-#
-# ITC = reports("ITC", "ITC 2018-2019 Annual Report.txt")
-# print(ITC.sort_glossary(ITC.divide_glossary(ITC.tokenify_glossary(ITC.read_file()))))
-#
-# Dabur = reports("Dabur", "Dabur 2018-19_Annual Report.txt")
-# print(Dabur.sort_glossary(Dabur.divide_glossary(Dabur.tokenify_glossary(Dabur.read_file()))))
-#
-# Godrej = reports("Godrej", "Godrej 2018-2019_Annual Report.txt")
-# print(Godrej.sort_glossary(Godrej.divide_glossary(Godrej.tokenify_glossary(Godrej.read_file()))))
-#
-# Marico = reports("Marico", "Marico 2018-2019_Annual Report.txt")
-# print(Marico.sort_glossary(Marico.divide_glossary(Marico.tokenify_glossary(Marico.read_file()))))
-#
-# Nestle = reports("Nestle", "Nestle 2017-2018_Annual Report.txt")
-# print(Nestle.sort_glossary(Nestle.divide_glossary(Nestle.tokenify_glossary(Nestle.read_file()))))
-#
-# PnG = reports("PnG", "P&G 2018-2019_Annual Report.txt")
-# print(PnG.sort_glossary(PnG.divide_glossary(PnG.tokenify_glossary(PnG.read_file()))))
+HUL = reports("HUL", "HUL 2018-2019_Annual Report.txt")
+print(HUL.sort_glossary(HUL.divide_glossary(HUL.tokenify_glossary(HUL.read_file()))))
+
+Colgate = reports("Colgate", "Colgate 2018-2019_Annual Report.txt")
+print(Colgate.sort_glossary(Colgate.divide_glossary(Colgate.tokenify_glossary(Colgate.read_file()))))
+
+ITC = reports("ITC", "ITC 2018-2019 Annual Report.txt")
+print(ITC.sort_glossary(ITC.divide_glossary(ITC.tokenify_glossary(ITC.read_file()))))
+
+Dabur = reports("Dabur", "Dabur 2018-19_Annual Report.txt")
+print(Dabur.sort_glossary(Dabur.divide_glossary(Dabur.tokenify_glossary(Dabur.read_file()))))
+
+Godrej = reports("Godrej", "Godrej 2018-2019_Annual Report.txt")
+print(Godrej.sort_glossary(Godrej.divide_glossary(Godrej.tokenify_glossary(Godrej.read_file()))))
+
+Marico = reports("Marico", "Marico 2018-2019_Annual Report.txt")
+print(Marico.sort_glossary(Marico.divide_glossary(Marico.tokenify_glossary(Marico.read_file()))))
+
+Nestle = reports("Nestle", "Nestle 2017-2018_Annual Report.txt")
+print(Nestle.sort_glossary(Nestle.divide_glossary(Nestle.tokenify_glossary(Nestle.read_file()))))
+
+PnG = reports("PnG", "P&G 2018-2019_Annual Report.txt")
+print(PnG.sort_glossary(PnG.divide_glossary(PnG.tokenify_glossary(PnG.read_file()))))
+
+
 
 
 class glossary:
@@ -257,7 +219,6 @@ class glossary:
         sheet=[]
         sheet= pd.read_excel(self.filepath)
         sheet = sheet.values.tolist()
-        # sheet = [item.lower() for sublist in sheet for item in sublist]
         print(sheet)
         return sheet
 

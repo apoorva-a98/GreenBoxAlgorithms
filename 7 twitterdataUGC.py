@@ -19,8 +19,6 @@ with open('afinn-165.json') as f:
   data = json.load(f)
 
 #CLEANING DATA
-# f_stop_words=open("StopWords_GenericLong.txt", "r")
-# stop_words=[str(i[0:-1]) for i in f_stop_words]
 avoid=['@','#','$','%','^','&','*','(',')','_','=','+','[',']','|','\n','\t','<','>','/']
 
 # READING GLOSSARY EXCEL
